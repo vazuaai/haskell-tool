@@ -1,0 +1,37 @@
+[
+
+     {
+        "caption": "Tools",
+        "id": "tools",
+        "children":
+        [
+            { "caption": "-", "id": "end"},
+            { "caption": "Start/Stop Haskell Tool", "command": "server_controller", "id": "end"},
+            
+            
+        ]
+
+    },
+
+    {
+        "caption": "Test Menu",
+        "id": "testmenu",
+        "children":
+        [
+            { "caption": "Say Hello World!", "command": "text" },
+            { "caption": "Start Server", "command": "start_server" },
+            { "caption": "Start Client", "command": "start_client" },
+            { "caption": "Open File By Name", "command": "commands-open_file_by_name" },
+            { "caption": "Close File By Name", "command": "close_file" },  
+            { "caption": "Folders", "command": "folders" },
+            { "caption": "Output Panel", "command": "output_panel" },
+            { "caption": "Is Modified", "command": "is_modified" },
+            { "caption": "Is Dirty", "command": "is_dirty" },
+            { "caption": "Refresh", "command": "refresh" },
+        ]
+
+    }
+
+   
+
+]
