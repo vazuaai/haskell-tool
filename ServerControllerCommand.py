@@ -10,8 +10,8 @@ import time
 import errno 
 import json
 
-from .ServerManager import ServerManager
-from .ClientManager import ClientManager
+from .server.ServerManager import ServerManager
+from .client.ClientManager import ClientManager
 from .FoldersCommand import FoldersCommand
 
 class ServerControllerCommand(sublime_plugin.ApplicationCommand):

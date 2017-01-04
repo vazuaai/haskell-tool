@@ -41,3 +41,18 @@ class ClientManager:
 		#s.close()
 
 		return
+
+	def init_client(self):
+		folderlist = sublime.active_window().folders()
+
+		print("\nThe opened folders on the sidebar: " )
+
+		for i in folderlist:
+			add_package(self, i)
+			#print(i)
+
+	def add_package(self, path):
+		print(path)
+
+	def set_event_listeners(self):
+		on_modified()
