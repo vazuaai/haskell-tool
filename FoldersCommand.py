@@ -6,11 +6,12 @@ class FoldersCommand(sublime_plugin.WindowCommand):
 	def run(self):
 
 		folderlist = []
-		folderlist = sublime.active_window().folders() 
+		folderlist = sublime.active_window().folders()
 		#self.view.window().folders()
 
 		print("\nThe opened folders on the sidebar: " )
-		for i in folderlist:0
+
+		for i in folderlist:
 			print(i)
 
 		return folderlist

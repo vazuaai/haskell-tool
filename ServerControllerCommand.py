@@ -3,7 +3,7 @@
 import sublime
 import sublime_plugin
 import os
-import socket               # Socket modul importálása
+import socket
 from threading import Thread
 import subprocess                                     
 import time
@@ -17,8 +17,8 @@ from .FoldersCommand import FoldersCommand
 class ServerControllerCommand(sublime_plugin.ApplicationCommand):
 
 	def __init__(self):
-		self.server = StartServerCommand()
-		self.client = StartClientCommand
+		self.server = ServerManager()
+		self.client = ClientManager()
 		self.folder_listing = FoldersCommand
 
 	def run(self):
@@ -27,11 +27,11 @@ class ServerControllerCommand(sublime_plugin.ApplicationCommand):
 		self.server.run()
 
 		# Put folder to a list that are listed in the sidebar
-		folders = self.folder_listing.run(self)
+		#folders = self.folder_listing.run(self)
 
 		#msg = b'{"tag":"KeepAlive","contents":[]}'
-		start_folders_msg = bytes('\n'.join(map(str, folders)), 'utf-8')
+		#start_folders_msg = bytes('\n'.join(map(str, folders)), 'utf-8')
 
 		# Start client
-		self.client.run(self, start_folders_msg)
+		self.client.run()
 
