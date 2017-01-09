@@ -18,4 +18,3 @@ class ServerManager:
 
 	def startserver(self):
 		subprocess.call('"C:\\Users\\Zoli\\AppData\\Roaming\\Sublime Text 3\\Packages\\haskell-tool\\ht-daemon.exe"', shell=False)
-

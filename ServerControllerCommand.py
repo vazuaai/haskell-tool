@@ -23,15 +23,19 @@ class ServerControllerCommand(sublime_plugin.ApplicationCommand):
 
 	def run(self):
 
-		# Start server
 		self.server.run()
 
 		# Put folder to a list that are listed in the sidebar
 		#folders = self.folder_listing.run(self)
 
-		#msg = b'{"tag":"KeepAlive","contents":[]}'
+		msg = b'{"tag":"KeepAlive","contents":[]}'
+		msg2 = b'{"tag":"AddPackages","addedPathes":[<pathes>]}'
 		#start_folders_msg = bytes('\n'.join(map(str, folders)), 'utf-8')
 
 		# Start client
 		self.client.run()
-
+		
+		print("Can client send:", self.client.can_client_send)
+		self.client.please_send(msg)
+		print("Can client send:", self.client.can_client_send)
+		#self.client.please_send(msg2)
