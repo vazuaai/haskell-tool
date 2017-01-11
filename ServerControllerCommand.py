@@ -28,12 +28,9 @@ class ServerControllerCommand(sublime_plugin.ApplicationCommand):
 
 		self.server.run()
 
-		time.sleep(3)
-
 		self.client.startclient()
 
 		#self.client.init_client()
-
 		self.client.keep_alive()
 		#self.add_packages()
 		#remove_packages()

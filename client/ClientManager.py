@@ -1,5 +1,6 @@
 #!/usr/bin/python27  
 
+from __future__ import with_statement
 import sublime
 import sublime_plugin
 import os
@@ -8,7 +9,9 @@ import socket
 import time 
 import errno      
 import json 
-from threading import Thread     
+from threading import Thread
+from threading import Lock
+
 
 class ClientManager:
 
@@ -21,9 +24,26 @@ class ClientManager:
 			ClientManager._instance = self
 			self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 			self.is_client_alive = False
+			self.lock = Lock()
+			self.lock.acquire()
+
+	def connect(self):
+
+		while True:
+			try:
+				self.connection = self.socket.connect((self.host, self.port))
+				self.lock.release()
+				break
+			except Exception as e:
+				time.sleep(0.1)
+
+		thread = Thread(target = self.receive, args=())
+		thread.start()
+		print("Receive thread started.")
 
 	def send_message(self, msg):
-		self.socket.send(msg)
+		with self.lock:
+			self.socket.send(msg)
 
 	def receive(self):
 		while True:
@@ -40,15 +60,9 @@ class ClientManager:
 		self.host = "127.0.0.1"
 		self.port = 4123
 
-		# 10 mp-ig próbálkozzunk a client elindításával
-		
-		self.connection = self.socket.connect((self.host, self.port))
-
-		thread = Thread(target = self.receive, args=())
+		thread = Thread(target = self.connect, args=())
 		thread.start()
-		print("Receive thread started.")
-
-		return
+		print("Connect thread started.")
 
 	def init_client(self):
 		folderlist = sublime.active_window().folders()
@@ -70,6 +84,7 @@ class ClientManager:
 		self.send_message(message)
 
 	def refresh_packages(self):
+		## kommenteket gyártani
 		# Csak azokat a packageket küldje el amiket még nem küldött el,
 		# le kell tárolni a már elküldött listákat, az initben kapottakat is ugyanabba
 		# az egész lényege hogy szinkronban legyen a szerver és kliens
