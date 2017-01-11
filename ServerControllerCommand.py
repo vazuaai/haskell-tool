@@ -9,10 +9,13 @@ import subprocess
 import time
 import errno 
 import json
+import time
 
 from .server.ServerManager import ServerManager
 from .client.ClientManager import ClientManager
 from .FoldersCommand import FoldersCommand
+
+
 
 class ServerControllerCommand(sublime_plugin.ApplicationCommand):
 
@@ -25,17 +28,20 @@ class ServerControllerCommand(sublime_plugin.ApplicationCommand):
 
 		self.server.run()
 
-		# Put folder to a list that are listed in the sidebar
-		#folders = self.folder_listing.run(self)
+		time.sleep(3)
 
-		msg = b'{"tag":"KeepAlive","contents":[]}'
-		msg2 = b'{"tag":"AddPackages","addedPathes":[<pathes>]}'
-		#start_folders_msg = bytes('\n'.join(map(str, folders)), 'utf-8')
+		self.client.startclient()
 
-		# Start client
-		self.client.run()
-		
-		print("Can client send:", self.client.can_client_send)
-		self.client.please_send(msg)
-		print("Can client send:", self.client.can_client_send)
-		#self.client.please_send(msg2)
+		#self.client.init_client()
+
+		self.client.keep_alive()
+		#self.add_packages()
+		#remove_packages()
+		#perform_refactoring()
+		#self.stop()
+		#self.disconnect()
+		#self.reload()
+
+		#self.client.send_message(msg)
+
+	

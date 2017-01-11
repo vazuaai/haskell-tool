@@ -7,7 +7,7 @@
         [
             { "caption": "-", "id": "end"},
             { "caption": "Start/Stop Haskell Tool", "command": "server_controller", "id": "end"},
-            
+            { "caption": "Check Server", "command": "keep_alive", "id": "end"},            
             
         ]
 
