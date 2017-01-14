@@ -16,21 +16,22 @@ class HaskellToolsPlugin(sublime_plugin.EventListener):
 
     def on_post_save(self, view):
         print(view.file_name(), "just got saved")
-        ClientManager._instance.reload(view.file_name(), "modified")
-        
+        if ClientManager._instance.connected is True:
+            ClientManager._instance.reload(view.file_name(), "saved")
+
     def on_new(self, view):
         print("new file")
 
     def on_modified(self, view):
         print(view.file_name(), "modified")
-        ClientManager._instance.reload(view.file_name(), "modified")
 
     def on_activated(self, view):
         print(view.file_name(), "is now the active view")
 
     def on_close(self, view):
         print(view.file_name(), "is no more")
-        ClientManager._instance.reload(view.file_name(), "removed")
+        if ClientManager._instance.connected is True:
+            ClientManager._instance.reload(view.file_name(), "removed")
 
     def on_clone(self, view):
         print(view.file_name(), "just got cloned")

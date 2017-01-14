@@ -22,14 +22,13 @@ class ServerControllerCommand(sublime_plugin.ApplicationCommand):
 	def __init__(self):
 		self.server = ServerManager()
 		self.client = ClientManager()
-		self.folder_listing = FoldersCommand
 
 	def run(self):
 
 		self.server.run()
-
 		self.client.startclient()
 		self.client.init_client()
+
 		#self.client.keep_alive()
 		#self.add_packages()
 		#remove_packages()

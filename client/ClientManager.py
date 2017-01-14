@@ -16,25 +16,36 @@ class ClientManager:
 
 	_instance = None
 
+	# Definition of __init__(self):
+	# This method is the constructor of the client.
+	#
 	def __init__(self):
 
 		print("I'm in init")
 		if ClientManager._instance is None:
 			ClientManager._instance = self
 			self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-			self.is_client_alive = False
+			self.connected = False
+
+			# lock
 			self.lock = Lock()
 			self.lock.acquire()
+
 			# packeges
 			self.sent_packages = []
 			self.current_packages = []
 
+	# Definition of connect(self):
+	# 
+	# This methods task is connecting to the server and start a thread with receive() method.
+	# After connection the lock released and the tool can send messages after that.
+	#
 	def connect(self):
-
 		while True:
 			try:
 				self.connection = self.socket.connect((self.host, self.port))
 				self.lock.release()
+				self.connected = True
 				break
 			except Exception as e:
 				time.sleep(0.1)
@@ -43,10 +54,18 @@ class ClientManager:
 		thread.start()
 		print("Receive thread started.")
 
+	# Definition of send_message(self, msg):
+	# It's send a message to the server, if the lock released.
+	#
+	# @msg the message that we want to send
+	#
 	def send_message(self, msg):
 		with self.lock:
 			self.socket.send(msg)
 
+	# Definition of receive(self):
+	# This method is responsible for catch response messages from the server.
+	#
 	def receive(self):
 		while True:
 			data = self.socket.recv(1024)		
@@ -57,8 +76,10 @@ class ClientManager:
 			else :
 				print("Még nem kezeljük ezt a hibát: ", message)
 
+	# Definition of startclient(self):
+	# It's defined the host, the port and starts a connection thread.
+	# 
 	def startclient(self):
-
 		self.host = "127.0.0.1"
 		self.port = 4123
 
@@ -66,30 +87,37 @@ class ClientManager:
 		thread.start()
 		print("Connect thread started.")
 
+	# Definition of init_client(self):
+	# This method intended to make some steps that necessary for
+	# the client, like asks for the opened folders in the project.
+	#
 	def init_client(self):
 		# itt már rögtön elküldjük a szervernek a megnyitott mappákat?
 		self.sent_packages = sublime.active_window().folders()
 
-		print(self.sent_packages)
-
-	def set_event_listeners(self):
-		on_modified()
-
+	# Definition of keep_alive(self):
+	# With this method the client notifies the server that it's still up and running.
+	#
 	def keep_alive(self):
 		message = b'{"tag":"KeepAlive","contents":[]}'
 		self.send_message(message)
 
+	# Definition of refresh_packages(self):
+	# If the user add a new package to the project or remove one from it
+	# the tool cathes these post events. They handled in HaskellToolPlugin.py, 
+	# exactly in the on_post_window_command() method. This method triggered 
+	# refresh_packages() that check the differencies between the sent_packages
+	# and the current_packages. Depending on the event was a remove or add, the
+	# client notifies the server.
+	#
 	def refresh_packages(self):
 
 		self.current_packages = sublime.active_window().folders()
-		print("Current packages: ",self.current_packages)
-		print("Sent packages: ",self.sent_packages)
-
 		# nagyobb vagy nagyobb egyenlő legyen a vizsgálat?
 		if len(self.current_packages) >= len(self.sent_packages):
+
 			# http://stackoverflow.com/questions/6486450/python-compute-list-difference
 			self.difference = list(set(self.current_packages) - set(self.sent_packages))
-			print("Difference: ", self.difference)
 
 			str_message = '{"tag":"AddPackages","addedPathes":['
 
@@ -100,13 +128,12 @@ class ClientManager:
 			byte_message = str.encode(str_message)
 			self.send_message(byte_message)
 
-			# Ez így oké, vagy használjam a list.append()-et? remove-nál hasonlóképp?
+			# Ez így oké, vagy használjam a list.append()-et? remove-nál (list.remove()) hasonlóképp?
 			self.sent_packages = self.current_packages
 
 		elif len(self.current_packages) < len(self.sent_packages):
 
 			self.difference = list(set(self.sent_packages) - set(self.current_packages))
-			print("Difference: ", self.difference)
 
 			str_message = '{"tag":"RemovePackages","removedPathes":['
 
@@ -115,7 +142,6 @@ class ClientManager:
 				# itt még meg kell oldani, hogy vesszővel írja ki
 				str_message += i + ' '
 
-			
 			str_message += ']}'
 			byte_message = str.encode(str_message)
 			self.send_message(byte_message)
@@ -134,20 +160,32 @@ class ClientManager:
 		message = b'{"tag":"PerformRefactoring","refactoring":<refactor-name>,"modulePath":<selected-module>,"editorSelection":<selected-range>,"details":[<refactoring-specific-data>]}'
 		self.send_message(message)
 
-	def stop(self, path):
-		# ha megnyomtuk a stopot
+	# Definition of stop(self):
+	# If the user press the button represents stop client, the tool send a message
+	# about this.
+	#
+	def stop(self):
+
 		message = b'{"tag":"Stop","contents":[]}'
 		self.send_message(message)
 		self.socket.close()
 
+	# Definition of reload(self, path, action_tpye):
+	# If the user modifies (save or delete file) a file, the tool catches the post 
+	# event and send a message to the server depending on the type of action.
+	#
+	# @path is the absolute path of the file which modified 
+	# @action_type can be "saved" or "removed"
+	# 
+	# The triggers of the reload() method is in the HaskellToolPlugin.py
+	# The exact methods that listen the events and trigger the reload() are 
+	# on_post_save() and on_close(self, view).
+	#
 	def reload(self, path, action_tpye):
-		# ha valaki save-et nyo (just got saved)
-		# ha valaki töröl akkor is csak akkor removedModules (modified)
 
 		path = str(path).replace('\\','\\\\')
 
-		if action_tpye == "modified":
-
+		if action_tpye == "saved":
 			str_message = '{"tag":"ReLoad","changedModules":['	
 			str_message += path	+ '], "removedModules":[]}'
 			byte_message = str.encode(str_message)
