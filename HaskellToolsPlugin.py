@@ -2,6 +2,9 @@
 
 import sublime
 import sublime_plugin
+import time 
+
+from .client.ClientManager import ClientManager
 
 class HaskellToolsPlugin(sublime_plugin.EventListener):
 
@@ -13,24 +16,36 @@ class HaskellToolsPlugin(sublime_plugin.EventListener):
 
     def on_post_save(self, view):
         print(view.file_name(), "just got saved")
+        ClientManager._instance.reload(view.file_name(), "modified")
         
     def on_new(self, view):
         print("new file")
 
     def on_modified(self, view):
         print(view.file_name(), "modified")
+        ClientManager._instance.reload(view.file_name(), "modified")
 
     def on_activated(self, view):
         print(view.file_name(), "is now the active view")
 
     def on_close(self, view):
         print(view.file_name(), "is no more")
+        ClientManager._instance.reload(view.file_name(), "removed")
 
     def on_clone(self, view):
         print(view.file_name(), "just got cloned")
 
     def on_window_command(self, view, command_name, args):
         print(command_name, "window_command")
+
+    def on_post_window_command(self, view, command_name, args):
+        print(command_name, "window_command")
+        
+        if command_name == "prompt_add_folder":
+            # Ez a rész nem működik jól, előbb kéri le a foldereket mint ahogy berakná az újat
+            ClientManager._instance.refresh_packages()
+        elif command_name == "remove_folder":
+            ClientManager._instance.refresh_packages()
 
     def on_view_command(self, view, command_name, args):
         print(command_name)

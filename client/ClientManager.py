@@ -12,7 +12,6 @@ import json
 from threading import Thread
 from threading import Lock
 
-
 class ClientManager:
 
 	_instance = None
@@ -26,6 +25,9 @@ class ClientManager:
 			self.is_client_alive = False
 			self.lock = Lock()
 			self.lock.acquire()
+			# packeges
+			self.sent_packages = []
+			self.current_packages = []
 
 	def connect(self):
 
@@ -65,16 +67,10 @@ class ClientManager:
 		print("Connect thread started.")
 
 	def init_client(self):
-		folderlist = sublime.active_window().folders()
+		# itt már rögtön elküldjük a szervernek a megnyitott mappákat?
+		self.sent_packages = sublime.active_window().folders()
 
-		print("\nThe opened folders on the sidebar: " )
-
-		for i in folderlist:
-			add_package(self, i)
-			#print(i)
-
-	#def add_package(self, path):
-	#	print(path)
+		print(self.sent_packages)
 
 	def set_event_listeners(self):
 		on_modified()
@@ -84,23 +80,48 @@ class ClientManager:
 		self.send_message(message)
 
 	def refresh_packages(self):
-		## kommenteket gyártani
-		# Csak azokat a packageket küldje el amiket még nem küldött el,
-		# le kell tárolni a már elküldött listákat, az initben kapottakat is ugyanabba
-		# az egész lényege hogy szinkronban legyen a szerver és kliens
-		# ha olyan event jön ami kiváltja ezt a függvényt akkor attól függően h lett új vagy töröltek packaget, kell küldeni a refresh vagy remove packages üzenetet
-		# Boldizsár emailje tartalmazza hogy hogy kell packaget belerakni a projektbe annak a post eventjét kell elkapni
-		# init fv beolvassa a mappákat | ha jött új mappa (Project/Add package..) akkor annak post eventjét elkapom, lekérem az összes foldert összehasonlítom az inittel és elküldöm az új mappa nevét | törlésnél ugyanígy | az alap mappa lista amihez hasonlítok mindig frissül!!!
-		# fontos a \ legyen \\ mindenhol
-		folders = sublime.active_window().folders()
-		str_message = '{"tag":"AddPackages","addedPathes":['
 
-		for i in folders:
-			str_message += i + ','
+		self.current_packages = sublime.active_window().folders()
+		print("Current packages: ",self.current_packages)
+		print("Sent packages: ",self.sent_packages)
 
-		str_message += ']}'
-		byte_message = str.encode(str_message)
-		self.send_message(byte_message)
+		# nagyobb vagy nagyobb egyenlő legyen a vizsgálat?
+		if len(self.current_packages) >= len(self.sent_packages):
+			# http://stackoverflow.com/questions/6486450/python-compute-list-difference
+			self.difference = list(set(self.current_packages) - set(self.sent_packages))
+			print("Difference: ", self.difference)
+
+			str_message = '{"tag":"AddPackages","addedPathes":['
+
+			for i in self.difference:
+				str_message += i + ','
+				str_message += ']}'
+
+			byte_message = str.encode(str_message)
+			self.send_message(byte_message)
+
+			# Ez így oké, vagy használjam a list.append()-et? remove-nál hasonlóképp?
+			self.sent_packages = self.current_packages
+
+		elif len(self.current_packages) < len(self.sent_packages):
+
+			self.difference = list(set(self.sent_packages) - set(self.current_packages))
+			print("Difference: ", self.difference)
+
+			str_message = '{"tag":"RemovePackages","removedPathes":['
+
+			for i in self.difference:
+				i = str(i).replace('\\','\\\\')
+				# itt még meg kell oldani, hogy vesszővel írja ki
+				str_message += i + ' '
+
+			
+			str_message += ']}'
+			byte_message = str.encode(str_message)
+			self.send_message(byte_message)
+
+			self.sent_packages = self.current_packages
+			print(self.sent_packages)
 
 	def perform_refactoring(self, refactoring_type):
 		# a haskell tools főaoldal kint vannak h milyen típusok vannak
@@ -113,13 +134,27 @@ class ClientManager:
 		message = b'{"tag":"PerformRefactoring","refactoring":<refactor-name>,"modulePath":<selected-module>,"editorSelection":<selected-range>,"details":[<refactoring-specific-data>]}'
 		self.send_message(message)
 
-	def stop(self):
+	def stop(self, path):
 		# ha megnyomtuk a stopot
 		message = b'{"tag":"Stop","contents":[]}'
-		self.client.please_send(message)
-
-	def reload(self):
-		# ha valaki save-et nyom
-		# ha valaki töröl akkor is csak akkor removedModules
-		message = b'{"tag":"ReLoad","changedModules":[<pathes>], "removedModules":[<pathes>]}'
 		self.send_message(message)
+		self.socket.close()
+
+	def reload(self, path, action_tpye):
+		# ha valaki save-et nyo (just got saved)
+		# ha valaki töröl akkor is csak akkor removedModules (modified)
+
+		path = str(path).replace('\\','\\\\')
+
+		if action_tpye == "modified":
+
+			str_message = '{"tag":"ReLoad","changedModules":['	
+			str_message += path	+ '], "removedModules":[]}'
+			byte_message = str.encode(str_message)
+			self.send_message(byte_message)
+
+		elif action_tpye == "removed":
+			str_message = '{"tag":"ReLoad","changedModules":[], "removedModules":['		
+			str_message += path + ']}'
+			byte_message = str.encode(str_message)
+			self.send_message(byte_message)
