@@ -13,8 +13,7 @@ import time
 
 from .client.ClientManager import ClientManager
 
-class GetCurrentFolderListCommand(sublime_plugin.ApplicationCommand):
+class RefactoringCommand(sublime_plugin.ApplicationCommand):
 
 	def run(self):
-		ClientManager._instance.current_packages = sublime.active_window().folders()
-		print("Current folder list:",ClientManager._instance.current_packages)
+		ClientManager._instance.perform_refactoring("rename")

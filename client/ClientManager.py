@@ -12,17 +12,22 @@ import json
 from threading import Thread
 from threading import Lock
 
+# Definition: 
+# This class represents the client that commuicate with server.
+#
 class ClientManager:
 
 	_instance = None
 
-	# Definition of __init__(self):
+	# Definition:
 	# This method is the constructor of the client.
 	#
 	def __init__(self):
 
 		print("I'm in init")
 		if ClientManager._instance is None:
+
+			# client
 			ClientManager._instance = self
 			self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 			self.connected = False
@@ -35,7 +40,11 @@ class ClientManager:
 			self.sent_packages = []
 			self.current_packages = []
 
-	# Definition of connect(self):
+			# selection
+			self.last_selection = ""
+			self.last_selection_file_name = ""
+
+	# Definition:
 	# 
 	# This methods task is connecting to the server and start a thread with receive() method.
 	# After connection the lock released and the tool can send messages after that.
@@ -54,7 +63,7 @@ class ClientManager:
 		thread.start()
 		print("Receive thread started.")
 
-	# Definition of send_message(self, msg):
+	# Definition:
 	# It's send a message to the server, if the lock released.
 	#
 	# @msg the message that we want to send
@@ -63,7 +72,7 @@ class ClientManager:
 		with self.lock:
 			self.socket.send(msg)
 
-	# Definition of receive(self):
+	# Definition:
 	# This method is responsible for catch response messages from the server.
 	#
 	def receive(self):
@@ -76,7 +85,7 @@ class ClientManager:
 			else :
 				print("Még nem kezeljük ezt a hibát: ", message)
 
-	# Definition of startclient(self):
+	# Definition:
 	# It's defined the host, the port and starts a connection thread.
 	# 
 	def startclient(self):
@@ -87,7 +96,7 @@ class ClientManager:
 		thread.start()
 		print("Connect thread started.")
 
-	# Definition of init_client(self):
+	# Definition:
 	# This method intended to make some steps that necessary for
 	# the client, like asks for the opened folders in the project.
 	#
@@ -95,14 +104,14 @@ class ClientManager:
 		# itt már rögtön elküldjük a szervernek a megnyitott mappákat?
 		self.sent_packages = sublime.active_window().folders()
 
-	# Definition of keep_alive(self):
+	# Definition:
 	# With this method the client notifies the server that it's still up and running.
 	#
 	def keep_alive(self):
 		message = b'{"tag":"KeepAlive","contents":[]}'
 		self.send_message(message)
 
-	# Definition of refresh_packages(self):
+	# Definition:
 	# If the user add a new package to the project or remove one from it
 	# the tool cathes these post events. They handled in HaskellToolPlugin.py, 
 	# exactly in the on_post_window_command() method. This method triggered 
@@ -150,27 +159,23 @@ class ClientManager:
 			print(self.sent_packages)
 
 	def perform_refactoring(self, refactoring_type):
-		# a haskell tools főaoldal kint vannak h milyen típusok vannak
-		# RenameDefinition src-range new-name
-		# Menu / Tools / Haskell Tools / Start / Stop
-		#							   / pl. rename
-		# <refactor-name> = pl. Rename
-		# modulpath: annak a filenek az abs elérése amiben a kijelölés van
-		# details: lehetséges adatok a refaktoráláshoz
-		message = b'{"tag":"PerformRefactoring","refactoring":<refactor-name>,"modulePath":<selected-module>,"editorSelection":<selected-range>,"details":[<refactoring-specific-data>]}'
-		self.send_message(message)
+		# Egyenlőre annyit csinál, hogy elküldi a kijelölést, a file abs útját
+		# és egy beégetett "rename" refaktor type-ot
+		path = str(self.last_selection_file_name).replace('\\','\\\\')
+		str_message = '{"tag":"PerformRefactoring","refactoring":' + refactoring_type + ',"modulePath":' + path + ',"editorSelection":' + self.last_selection + ',"details":[<refactoring-specific-data>]}'
+		byte_message = str.encode(str_message)
+		self.send_message(byte_message)
 
-	# Definition of stop(self):
+	# Definition:
 	# If the user press the button represents stop client, the tool send a message
 	# about this.
 	#
 	def stop(self):
-
 		message = b'{"tag":"Stop","contents":[]}'
 		self.send_message(message)
 		self.socket.close()
 
-	# Definition of reload(self, path, action_tpye):
+	# Definition:
 	# If the user modifies (save or delete file) a file, the tool catches the post 
 	# event and send a message to the server depending on the type of action.
 	#

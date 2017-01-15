@@ -1,18 +1,22 @@
 [
-
      {
         "caption": "Tools",
         "id": "tools",
-        "children":
+        "children": 
         [
+           {
+            "caption": "Haskell Tool",
+            "id": "tools",
+            "children": 
+            [
             { "caption": "-", "id": "end"},
             { "caption": "Start/Stop Haskell Tool", "command": "server_controller", "id": "end"},
             { "caption": "Check Server", "command": "keep_alive", "id": "end"},   
-            { "caption": "Current Folders", "command": "get_current_folder_list", "id": "end"},
-            { "caption": "Stop Client", "command": "stop_client", "id": "end"},      
-            
+            { "caption": "Stop Client", "command": "stop_client", "id": "end"},
+            { "caption": "Refactoring", "command": "refactoring", "id": "end"},   
+            ]
+            }
         ]
-
     },
 
     {
