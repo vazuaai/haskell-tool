@@ -12,22 +12,25 @@ import json
 import time
 
 from .server.ServerManager import ServerManager
+from .server.ServerManager import get_server_manager
+
 from .client.ClientManager import ClientManager
-from .FoldersCommand import FoldersCommand
+from .client.ClientManager import get_client_manager
 
+class ServerControllerCommand(sublime_plugin.TextCommand):
 
+	def __init__(self,view):
+		super(ServerControllerCommand,self).__init__(view)
+		self.server = get_server_manager()
+		self.client = get_client_manager()
 
-class ServerControllerCommand(sublime_plugin.ApplicationCommand):
-
-	def __init__(self):
-		self.server = ServerManager()
-		self.client = ClientManager()
-
-	def run(self):
+	def run(self,edit):
 
 		self.server.run()
 		self.client.startclient()
-		self.client.init_client()
+		self.client.init_client(edit)
+		#time.sleep(3)
+		#self.client.keep_alive_server(self.server)
 
 		#self.client.keep_alive()
 		#self.add_packages()

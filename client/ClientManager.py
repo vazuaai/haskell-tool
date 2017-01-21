@@ -41,8 +41,9 @@ class ClientManager:
 			self.current_packages = []
 
 			# selection
-			self.last_selection = ""
-			self.last_selection_file_name = ""
+			self.selection = ""
+			self.selection_file_name = ""
+
 
 	# Definition:
 	# 
@@ -76,14 +77,23 @@ class ClientManager:
 	# This method is responsible for catch response messages from the server.
 	#
 	def receive(self):
+		self.recv_num = 0	
+
 		while True:
 			data = self.socket.recv(1024)		
-			message = json.loads(data.decode("utf-8"))
+			self.message = json.loads(data.decode("utf-8"))
+			self.recv_num += 1
+			print("Num of recv: " + str(self.recv_num))
 
-			if message.get("tag") == "ErrorMassage":
-				print("Egy error érkezett: ", message.get("errorMsg"))
+			if self.message.get("tag") == "ErrorMassage":
+				error_msg = "Error received: ", self.message.get("errorMsg")
+				sublime.error_message(error_msg)
+
 			else :
-				print("Még nem kezeljük ezt a hibát: ", message)
+				print("Még nem kezeljük ezt a hibát: ", self.message)
+				#TODO: sublime class-ban van egy csomó message-es cucc!!!
+				msg_dialog = "The received message is: " + str(self.message)
+				sublime.message_dialog(msg_dialog)
 
 	# Definition:
 	# It's defined the host, the port and starts a connection thread.
@@ -100,9 +110,10 @@ class ClientManager:
 	# This method intended to make some steps that necessary for
 	# the client, like asks for the opened folders in the project.
 	#
-	def init_client(self):
+	def init_client(self, edit):
 		# itt már rögtön elküldjük a szervernek a megnyitott mappákat?
 		self.sent_packages = sublime.active_window().folders()
+		self.edit = edit
 
 	# Definition:
 	# With this method the client notifies the server that it's still up and running.
@@ -111,6 +122,26 @@ class ClientManager:
 		message = b'{"tag":"KeepAlive","contents":[]}'
 		self.send_message(message)
 
+	def keep_alive_server(self, server):
+		sended_keep_alive = 0
+		
+		while True:
+			difference = sended_keep_alive - self.recv_num
+			print(difference)
+			if difference > 10:
+				#server.run()
+				print("THE SERVER STARTED")
+				sended_keep_alive = 0
+			else: 
+				time.sleep(1)
+				self.keep_alive()
+				sended_keep_alive += 1
+
+
+	def keep_alive_server_runner(self, server):
+		thread = Thread(target = self.keep_alive_server, args=(server))
+		thread.start()
+
 	# Definition:
 	# If the user add a new package to the project or remove one from it
 	# the tool cathes these post events. They handled in HaskellToolPlugin.py, 
@@ -118,6 +149,8 @@ class ClientManager:
 	# refresh_packages() that check the differencies between the sent_packages
 	# and the current_packages. Depending on the event was a remove or add, the
 	# client notifies the server.
+	#
+	# TODO: ide is kell majd az edit!!!
 	#
 	def refresh_packages(self):
 
@@ -158,11 +191,32 @@ class ClientManager:
 			self.sent_packages = self.current_packages
 			print(self.sent_packages)
 
-	def perform_refactoring(self, refactoring_type):
+	# Definition:
+	# 
+	def get_selection(self):
+
+		view = sublime.active_window().active_view()
+
+		row_begin, col_begin = view.rowcol(view.sel()[0].begin())
+		row_end, col_end = view.rowcol(view.sel()[0].end())
+
+		row_begin += 1
+		col_begin += 1
+		row_end += 1
+		col_end += 1
+
+		self.selection = str(row_begin) + ":" + str(col_begin) + "-" + str(row_end) + ":" + str(col_end)
+		self.selection_file_name = view.file_name()
+		print("Selected range: ", self.selection)
+
+	def perform_refactoring(self, refactoring_type,edit):
 		# Egyenlőre annyit csinál, hogy elküldi a kijelölést, a file abs útját
 		# és egy beégetett "rename" refaktor type-ot
-		path = str(self.last_selection_file_name).replace('\\','\\\\')
-		str_message = '{"tag":"PerformRefactoring","refactoring":' + refactoring_type + ',"modulePath":' + path + ',"editorSelection":' + self.last_selection + ',"details":[<refactoring-specific-data>]}'
+		self.edit = edit
+		self.get_selection()
+		path = str(self.selection_file_name).replace('\\','\\\\')
+
+		str_message = '{"tag":"PerformRefactoring","refactoring":' + refactoring_type + ',"modulePath":' + path + ',"editorSelection":' + self.selection + ',"details":[<refactoring-specific-data>]}'
 		byte_message = str.encode(str_message)
 		self.send_message(byte_message)
 
@@ -170,7 +224,8 @@ class ClientManager:
 	# If the user press the button represents stop client, the tool send a message
 	# about this.
 	#
-	def stop(self):
+	def stop(self,edit):
+		self.edit = edit
 		message = b'{"tag":"Stop","contents":[]}'
 		self.send_message(message)
 		self.socket.close()
@@ -185,6 +240,8 @@ class ClientManager:
 	# The triggers of the reload() method is in the HaskellToolPlugin.py
 	# The exact methods that listen the events and trigger the reload() are 
 	# on_post_save() and on_close(self, view).
+	#
+	# Comment: kell majd itt az edit a paraméter listába erre még visszatérünk
 	#
 	def reload(self, path, action_tpye):
 
@@ -201,3 +258,11 @@ class ClientManager:
 			str_message += path + ']}'
 			byte_message = str.encode(str_message)
 			self.send_message(byte_message)
+
+# static method 
+def get_client_manager():
+
+	if ClientManager._instance is None:
+		ClientManager._instance = ClientManager()
+
+	return ClientManager._instance

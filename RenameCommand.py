@@ -14,8 +14,7 @@ import time
 from .client.ClientManager import ClientManager
 from .client.ClientManager import get_client_manager
 
-class RefactoringCommand(sublime_plugin.TextCommand):
+class RenameCommand(sublime_plugin.TextCommand):
 
-	# Csak akkor engedjük futtatni ha a szerver megy!!! különben lefagy
 	def run(self,edit):
-		get_client_manager().perform_refactoring("rename",edit)
+		get_client_manager().refact_rename(edit)

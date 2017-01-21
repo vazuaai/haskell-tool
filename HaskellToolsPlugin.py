@@ -50,18 +50,3 @@ class HaskellToolsPlugin(sublime_plugin.EventListener):
 
     def on_view_command(self, view, command_name, args):
         print(command_name)
-
-    def on_selection_modified_async(self, view):
-
-        row_begin, col_begin = view.rowcol(view.sel()[0].begin())
-        row_end, col_end = view.rowcol(view.sel()[0].end())
-        
-        row_begin += 1
-        col_begin += 1
-        row_end += 1
-        col_end += 1
-
-        ClientManager._instance.last_selection = str(row_begin) + ":" + str(col_begin) + "-" + str(row_end) + ":" + str(col_end)
-        print(ClientManager._instance.last_selection)
-        ClientManager._instance.last_selection_file_name = view.file_name()
-        

@@ -13,6 +13,8 @@ import time
 #
 class ServerManager:
 
+	_instance = None
+
 	# Definition:
 	# This methods task is to create and start a thread with startserver() method.
 	#
@@ -26,3 +28,11 @@ class ServerManager:
 	#
 	def startserver(self):
 		subprocess.call('"C:\\Users\\Zoli\\AppData\\Roaming\\Sublime Text 3\\Packages\\haskell-tool\\ht-daemon.exe"', shell=False)
+
+# static method
+def get_server_manager():
+	
+	if ServerManager._instance is None:
+		ServerManager._instance = ServerManager()
+
+	return ServerManager._instance
