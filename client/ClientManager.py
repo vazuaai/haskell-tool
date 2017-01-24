@@ -83,7 +83,7 @@ class ClientManager:
 			data = self.socket.recv(1024)		
 			self.message = json.loads(data.decode("utf-8"))
 			self.recv_num += 1
-			print("Num of recv: " + str(self.recv_num))
+			#print("Num of recv: " + str(self.recv_num))
 
 			if self.message.get("tag") == "ErrorMassage":
 				error_msg = "Error received: ", self.message.get("errorMsg")
@@ -127,7 +127,7 @@ class ClientManager:
 		
 		while True:
 			difference = sended_keep_alive - self.recv_num
-			print(difference)
+			#print(difference)
 			if difference > 10:
 				#server.run()
 				print("THE SERVER STARTED")
@@ -209,14 +209,14 @@ class ClientManager:
 		self.selection_file_name = view.file_name()
 		print("Selected range: ", self.selection)
 
-	def perform_refactoring(self, refactoring_type,edit):
+	def perform_refactoring(self, edit, refactoring_type, details):
 		# Egyenlőre annyit csinál, hogy elküldi a kijelölést, a file abs útját
 		# és egy beégetett "rename" refaktor type-ot
 		self.edit = edit
 		self.get_selection()
 		path = str(self.selection_file_name).replace('\\','\\\\')
 
-		str_message = '{"tag":"PerformRefactoring","refactoring":' + refactoring_type + ',"modulePath":' + path + ',"editorSelection":' + self.selection + ',"details":[<refactoring-specific-data>]}'
+		str_message = '{"tag":"PerformRefactoring","refactoring":' + refactoring_type + ',"modulePath":' + path + ',"editorSelection":' + self.selection + ',"details":['+ details +']}'
 		byte_message = str.encode(str_message)
 		self.send_message(byte_message)
 
