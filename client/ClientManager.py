@@ -44,6 +44,18 @@ class ClientManager:
 			self.selection = ""
 			self.selection_file_name = ""
 
+	
+	# Definition:
+	# It's defined the host, the port and starts a connection thread.
+	# 
+	def startclient(self):
+		self.host = "127.0.0.1"
+		self.port = 4123
+		self.is_alive_counter = 0
+
+		thread = Thread(target = self.connect, args=())
+		thread.start()
+		print("Connect thread started.")
 
 	# Definition:
 	# 
@@ -72,39 +84,27 @@ class ClientManager:
 	def send_message(self, msg):
 		with self.lock:
 			self.socket.send(msg)
+			self.is_alive_counter += 1
 
 	# Definition:
 	# This method is responsible for catch response messages from the server.
 	#
 	def receive(self):
-		self.recv_num = 0	
 
 		while True:
 			data = self.socket.recv(1024)		
-			self.message = json.loads(data.decode("utf-8"))
-			self.recv_num += 1
-			#print("Num of recv: " + str(self.recv_num))
+			message = json.loads(data.decode("utf-8"))
+			self.is_alive_counter -= 1
 
-			if self.message.get("tag") == "ErrorMassage":
-				error_msg = "Error received: ", self.message.get("errorMsg")
+			if message.get("tag") == "ErrorMassage":
+				error_msg = "Error received: ", message.get("errorMsg")
 				sublime.error_message(error_msg)
 
 			else :
-				print("Még nem kezeljük ezt a hibát: ", self.message)
-				#TODO: sublime class-ban van egy csomó message-es cucc!!!
-				msg_dialog = "The received message is: " + str(self.message)
+				print("Még nem kezeljük ezt a hibát: ", message)
+				msg_dialog = "The received message is: " + str(message)
 				sublime.message_dialog(msg_dialog)
 
-	# Definition:
-	# It's defined the host, the port and starts a connection thread.
-	# 
-	def startclient(self):
-		self.host = "127.0.0.1"
-		self.port = 4123
-
-		thread = Thread(target = self.connect, args=())
-		thread.start()
-		print("Connect thread started.")
 
 	# Definition:
 	# This method intended to make some steps that necessary for
@@ -123,19 +123,17 @@ class ClientManager:
 		self.send_message(message)
 
 	def keep_alive_server(self, server):
-		sended_keep_alive = 0
 		
 		while True:
-			difference = sended_keep_alive - self.recv_num
-			#print(difference)
-			if difference > 10:
+
+			if self.is_alive_counter > 10:
 				#server.run()
 				print("THE SERVER STARTED")
-				sended_keep_alive = 0
+				self.is_alive_counter = 0
 			else: 
 				time.sleep(1)
 				self.keep_alive()
-				sended_keep_alive += 1
+				#self.is_alive_counter += 1
 
 
 	def keep_alive_server_runner(self, server):
@@ -163,9 +161,18 @@ class ClientManager:
 
 			str_message = '{"tag":"AddPackages","addedPathes":['
 
+			flag = True
+
 			for i in self.difference:
-				str_message += i + ','
-				str_message += ']}'
+				if flag:
+					flag = False
+
+				else:
+					str_message += ','
+
+				str_message += i
+
+			str_message += ']}'
 
 			byte_message = str.encode(str_message)
 			self.send_message(byte_message)

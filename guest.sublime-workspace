@@ -1,0 +1,568 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"erro",
+				"error_msg"
+			],
+			[
+				"Serve",
+				"ServerManager"
+			],
+			[
+				"Serv",
+				"ServerManager"
+			],
+			[
+				"Ser",
+				"ServerManager"
+			],
+			[
+				"run",
+				"run_command"
+			],
+			[
+				"active",
+				"active_view"
+			],
+			[
+				"acti",
+				"active_window"
+			],
+			[
+				"str",
+				"str_message"
+			],
+			[
+				"file",
+				"file_name"
+			],
+			[
+				"se",
+				"selection"
+			],
+			[
+				"e",
+				"editor_selection"
+			],
+			[
+				"col",
+				"col_end"
+			],
+			[
+				"col_",
+				"col_begin"
+			],
+			[
+				"row",
+				"row_end"
+			],
+			[
+				"__",
+				"__init__"
+			],
+			[
+				"len",
+				"len_current_packages"
+			],
+			[
+				"sen",
+				"sent_packages"
+			],
+			[
+				"_",
+				"_instance"
+			],
+			[
+				"err",
+				"errorMsg"
+			],
+			[
+				"fo",
+				"for\tFor Loop"
+			],
+			[
+				"f",
+				"folders"
+			],
+			[
+				"can",
+				"can_client_send"
+			],
+			[
+				"while",
+				"while\tWhile Loop"
+			],
+			[
+				"sel",
+				"selfsocket"
+			],
+			[
+				"send",
+				"send_message"
+			],
+			[
+				"del",
+				"deleted"
+			],
+			[
+				"sto",
+				"stop_server"
+			],
+			[
+				"thre",
+				"thread"
+			],
+			[
+				"thread",
+				"threading"
+			],
+			[
+				"folde",
+				"folder_listing"
+			],
+			[
+				"Fol",
+				"FoldersCommand"
+			],
+			[
+				"S",
+				"StartServerCommand"
+			],
+			[
+				"startclinet",
+				"startclient"
+			],
+			[
+				"su",
+				"sublime"
+			],
+			[
+				"web",
+				"websocket\tmodule"
+			],
+			[
+				"is",
+				"isDirty"
+			],
+			[
+				"i",
+				"insert"
+			],
+			[
+				"a",
+				"addr"
+			]
+		]
+	},
+	"buffers":
+	[
+		{
+			"file": "/C/Users/Zoli/Desktop/haskell-tool-guest/A.hs",
+			"settings":
+			{
+				"buffer_size": 37,
+				"line_ending": "Windows"
+			}
+		}
+	],
+	"build_system": "",
+	"build_system_choices":
+	[
+		[
+			[
+				[
+					"Packages/Python/Python.sublime-build",
+					""
+				],
+				[
+					"Packages/Python/Python.sublime-build",
+					"Syntax Check"
+				]
+			],
+			[
+				"Packages/Python/Python.sublime-build",
+				""
+			]
+		]
+	],
+	"build_varint": "",
+	"command_palette":
+	{
+		"height": 392.0,
+		"last_filter": "",
+		"selected_items":
+		[
+			[
+				"menu",
+				"View: Toggle Menu"
+			],
+			[
+				"Package Control",
+				"Preferences: Package Control Settings – Default"
+			],
+			[
+				"package  ",
+				"Package Control: Remove Package"
+			],
+			[
+				"",
+				"Anaconda: Show error list"
+			],
+			[
+				"insta",
+				"Package Control: Install Package"
+			]
+		],
+		"width": 400.0
+	},
+	"console":
+	{
+		"height": 635.0,
+		"history":
+		[
+			"asd",
+			"cl",
+			"clear",
+			"print(sys.version)",
+			"import sys",
+			"print(sys.version)",
+			"import sys",
+			"print(sys.version)",
+			"python --version",
+			"sys.version()",
+			"sys.version",
+			"-version python",
+			"python -version",
+			"--version python",
+			"python --version",
+			"python",
+			"print(sys.version)",
+			"import sys",
+			"print(sys.version)",
+			"python",
+			"clear",
+			"ddsf7",
+			"exit",
+			"asd",
+			"print \"Géza\"",
+			"python",
+			"exit",
+			"--version",
+			"version",
+			"fsdf",
+			"python --version",
+			"python",
+			"python --version",
+			"yxcyxc",
+			"view.run_command(\"server\")",
+			"view.run_command(\"text\")",
+			"view.run_command(\"text\", \"helo\")",
+			"view.run_command(\"text\", 'helo')",
+			"view.run_command(\"text\")",
+			"view.run_command(\"hello\")",
+			"Hello World!"
+		]
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"expanded_folders":
+	[
+		"/C/Users/Zoli/Desktop/haskell-tool-guest"
+	],
+	"file_history":
+	[
+		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/RefactoringCommand.py",
+		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/Main.sublime-menu",
+		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/ServerControllerCommand.py",
+		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/StopClientCommand.py",
+		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/RefreshCommand.py",
+		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/HaskellToolsPlugin.py",
+		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/PopUpCommand.py",
+		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/server/ServerManager.py",
+		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/KeepAliveCommand.py",
+		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/Refactoring.py",
+		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/ViewPlugin.py",
+		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/client/ClientManager.py",
+		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/asd",
+		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/dfsdf",
+		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/GetCurrentFolderListCommand.py",
+		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/User/Package Control.sublime-settings",
+		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/User/Commands.py",
+		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/RefreshPackagesCommand.py",
+		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/FoldersCommand.py",
+		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/IsDirty.py",
+		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/IsModified.py",
+		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/ServerManager.py",
+		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/ClientManager.py",
+		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/tool/ServerManager.py",
+		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/tool/ClientManager.py",
+		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/tool/ServerControllerCommand.py",
+		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/Commands/FoldersCommand.py",
+		"/E/Suli/szamgraf/cg_bead_02/02_ParamSurfTextures/02_ParamSurfTextures/main.cpp",
+		"/E/Suli/szamgraf/03_Geometry/03_Geometry/main.cpp",
+		"/E/Suli/szamgraf/bead02.txt",
+		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/Commands/IsDirty.py",
+		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/Commands/CloseFileByName.py",
+		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/Commands/Main.sublime-menu",
+		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/Commands.py",
+		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/ClientCommand.py",
+		"/E/Suli/szamgraf/mintaZH/01_Middle/01_Middle/dirLight.frag",
+		"/E/Suli/szamgraf/mintaZH/01_Middle/01_Middle/MyApp.h",
+		"/E/Suli/oprendszerek/bead_02/bead.c",
+		"/E/Suli/oprendszerek/varju_zoltan_vilmos_gl7h3k_os_bead_02/kos_data",
+		"/E/Suli/oprendszerek/bead_01/bead.c",
+		"/C/Users/Zoli/AppData/Local/Temp/Rar$DIa0.482/bead.c",
+		"/E/Suli/oprendszerek/bead_02/data",
+		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/ServerCommand.py",
+		"/C/Users/Zoli/Desktop/infotöri",
+		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/Haskell Tool/ClientCommand.py",
+		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/Haskell Tool/Main.sublime-menu",
+		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/Haskell Tool/ServerCommand.py",
+		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/Haskell Tool/ServerControllerCommand.py",
+		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/Haskell Tool/FoldersCommand.py",
+		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/Haskell Tool/OpenFileByName",
+		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/Haskell Tool/__init__.py",
+		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/Package Control/Package Control.sublime-settings",
+		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/User/Preferences.sublime-settings",
+		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/Default/Main.sublime-menu",
+		"/C/Users/Zoli/Desktop/todo",
+		"/C/Users/Zoli/Desktop/main.cpp",
+		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/Haskell Tool/CloseFileByName.py",
+		"/C/Users/Zoli/Desktop/opr.pdf",
+		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/Haskell Tool/SimpleServer/StartServer.py",
+		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/Haskell Tool/SimpleServer/Server.packege-menu.json",
+		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/Haskell Tool/SimpleServer/ThreadRunnerCommand.py",
+		"/C/Users/Zoli/Desktop/MyApp.cpp",
+		"/C/Users/Zoli/AppData/Local/Temp/Rar$DIa0.731/MyApp.cpp",
+		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/Haskell Tool/ExecServer.py",
+		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/Haskell Tool/test.txt",
+		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/Haskell Tool/Commands.py",
+		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/Haskell Tool/OpenFileByNameCommand.py",
+		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/Haskell Tool/ThreadRunnerCommand.py",
+		"/C/Users/Zoli/AppData/Local/Temp/ExpectedValue.java",
+		"/C/Users/Zoli/Desktop/ExpectedValue.java",
+		"/C/Users/Zoli/Desktop/infinity stones",
+		"/C/Users/Zoli/Desktop/bead.c",
+		"/C/Users/Zoli/Desktop/gl7h3k_bead01/bead.c",
+		"/C/Users/Zoli/AppData/Local/Temp/scp17940/afs/inf.elte.hu/user/v/va/vazuaai/2016_2017_1/os/bead_01/bead.c",
+		"/C/Program Files/Sublime Text 3/sublime_plugin.py",
+		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/User/Python.sublime-settings",
+		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/Python/Python.sublime_build",
+		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/User/WebSocketHandlerServer.py",
+		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/Haskell Tool/IsModified.py",
+		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/Haskell Tool/IsDirty.py",
+		"/C/Users/Zoli/Downloads/Main.exe",
+		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/Haskell Tool/RefreshCommand.py",
+		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/Haskell Tool/OutputPanelCommand.py",
+		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/Haskell Tool/test",
+		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/Haskell Tool/IsDirtyCommand.py",
+		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/Haskell Tool/IsDirtyCommand",
+		"/C/Users/Zoli/OneDrive/Perger/Közös/Grundi/betegcrunk.tt",
+		"/C/Users/Zoli/OneDrive/Perger/Közös/Grundi/betegcrunk.txt",
+		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/Haskell Tool/client_server_test_01",
+		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/Haskell Tool/SimpleServer/Client.py",
+		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/Haskell Tool/SimpleServer/Server.py",
+		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/Haskell Tool/commands.py"
+	],
+	"find":
+	{
+		"height": 28.0
+	},
+	"find_in_files":
+	{
+		"height": 96.0,
+		"where_history":
+		[
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": true,
+		"find_history":
+		[
+			"view",
+			"is_client_alive",
+			"self",
+			"package",
+			"folder_listing",
+			"command = \"C:\\Users\\Zoli\\AppData\\Roaming\\Sublime Text 3\\Packages\\Haskell Tool\\ht-daemon.exe\"\n",
+			"importlib",
+			"edit",
+			"},     ",
+			"')    \t"
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": true,
+		"replace_history":
+		[
+		],
+		"reverse": false,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": true,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"selected": 0,
+			"sheets":
+			[
+				{
+					"buffer": 0,
+					"file": "/C/Users/Zoli/Desktop/haskell-tool-guest/A.hs",
+					"semi_transient": true,
+					"settings":
+					{
+						"buffer_size": 37,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								37,
+								0
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Haskell/Haskell.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				}
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 28.0
+	},
+	"input":
+	{
+		"height": 50.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.anaconda_documentation":
+	{
+		"height": 130.0
+	},
+	"output.error":
+	{
+		"height": 130.0
+	},
+	"output.error_output":
+	{
+		"height": 0.0
+	},
+	"output.exec":
+	{
+		"height": 144.0
+	},
+	"output.find_results":
+	{
+		"height": 0.0
+	},
+	"output.out":
+	{
+		"height": 0.0
+	},
+	"output.sf_st3_output":
+	{
+		"height": 130.0
+	},
+	"output.unsaved_changes":
+	{
+		"height": 142.0
+	},
+	"pinned_build_system": "Packages/Python/Python.sublime-build",
+	"project": "guest.sublime-project",
+	"replace":
+	{
+		"height": 52.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+			[
+				"",
+				"C:\\Users\\Zoli\\AppData\\Roaming\\Sublime Text 3\\Packages\\Haskell Tool\\ClientCommand.py"
+			]
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_symbol":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"selected_group": 0,
+	"settings":
+	{
+	},
+	"show_minimap": true,
+	"show_open_files": true,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 148.0,
+	"status_bar_visible": true,
+	"template_settings":
+	{
+	}
+}

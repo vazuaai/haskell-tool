@@ -47,6 +47,8 @@ class HaskellToolsPlugin(sublime_plugin.EventListener):
             ClientManager._instance.refresh_packages()
         elif command_name == "remove_folder":
             ClientManager._instance.refresh_packages()
+        elif command_name == "refresh_folder_list":
+            ClientManager._instance.refresh_packages()
 
     def on_view_command(self, view, command_name, args):
         print(command_name)
