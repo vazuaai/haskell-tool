@@ -4,28 +4,53 @@ TODO:
 	- add_regions hassználatával a servertől kapott regiont feldolgozni
 	- CompilationProblem: {"tag":"CompilationProblem","errorMsg":<message-text>}
 		- ehelyett egy emészthetőbb formában lesznek, könnyebben feldolgozható lesz
-	- erről Boldizsár még küld e-mailt
+	- erről Boldizsár még küld e-mailt ( NINCS KÉSZ )
 
 	Ezekkel kezdeni: 
 	- ha vmiért leáll a szerver akkor indítsuk el újra, küldjünk keepalive msg-ket egy külön
 	szálról folyamatosan, másodpercenként egyet, ha nem kap vissza response-t akkor leállt
 	- ha valamelyikre nem kapunk 10 mp -en belül responset akkor kell újraindítani
 	- ua úgy mint ahogy az elsőt elindítottuk
-	- ha 11. keep alive-ra nem jön üzenet akkor van gáz és újra kell indítani
+	- ha 11. keep alive-ra nem jön üzenet akkor van gáz és újra kell indítani (KÉSZ)
 
 	- rename reafktort kéne megcsinálni
 	- amikor a user ezt megnyomja akkor fel kell jönni egy input ablaknak és meg kell 
 	mondania hogy mire nevezze át a kijelölt részt 
-	- és akkor ezt be kell rakni a "details" részbe az üzenet részeként
+	- és akkor ezt be kell rakni a "details" részbe az üzenet részeként  (KÉSZ)
 
 TODO:
-	- átnevezni a ht-daemon
+	- átnevezni a ht-daemon 
 
 	- a küldés-fogadásnál egy változóban kéne tárolni,
 		- novel ha küld csökkent ha fogad, és ha a küld nagyobb mint 10 akkor újraindul
 	- MEGJEGYZÉS: 	Áttettem a send message-be, mert a receive csökkent mindig egyet, viszont ez ugye
-					minden fogadásnál megtörténik nem csak a keep alive response-nál.
+					minden fogadásnál megtörténik nem csak a keep alive response-nál. (KÉSZ)
 
-	- Project/Refresh folder triggerelje a mi refresh_packeges() fv ket
+	- Project/Refresh folder triggerelje a mi refresh_packeges() fv ket (KÉSZ)
 
-	- clientManagert átnézni mert működnie kell a ConnectToHaskellToolCommand alapján
+
+TODO: 
+
+	- meg kell nézni python-ban van-e olyan, hogy ha lelövöm a ht-deamon.exe-t akkor utána induljon újra,
+		tehát ha feladatkezelőben lelöveöm
+
+	- client manager / def receive () (KÉSZ)
+
+	- lehessen a side-bar-ban egy adott mappához, másik mappát adni (Toggle In Haskell Tool)
+		- e-mail
+		- ha a toggle gomb fogja triggerelni a refresh packeges fv-t
+		- értelemszerűen ha új mappa van akkor azt el kell küldeni a szervernek (KÉSZ)
+
+	- kipróbálni a rename refaktorálást a próba haskell projekten (KÉSZ)
+	
+
+TODO: 
+	- szépítésnek ha toggle-t nyomunk akkor lássuk, hogy mi töltődik be (Loading...) 
+		- valahogy jelölni
+
+	- def perform_refactoring -ban a JSON üzenetet egy a fv-ben leírt módon
+
+	- tisztítani a kódot
+
+	COMMITÁLNI!!!!
+	

@@ -43,7 +43,6 @@ class HaskellToolsPlugin(sublime_plugin.EventListener):
         print(command_name, "window_command")
         
         if command_name == "prompt_add_folder":
-            # Ez a rész nem működik jól, előbb kéri le a foldereket mint ahogy berakná az újat
             ClientManager._instance.refresh_packages()
         elif command_name == "remove_folder":
             ClientManager._instance.refresh_packages()

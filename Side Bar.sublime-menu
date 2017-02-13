@@ -1,0 +1,11 @@
+[
+    { "caption": "-" },
+    {
+        "caption": "Toggle In Haskell Tool",
+        "command": "refresh",
+        "args": {
+            "paths": []
+        }
+    },
+    { "caption": "-" }
+]

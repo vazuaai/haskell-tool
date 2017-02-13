@@ -9,6 +9,7 @@ import socket
 import time 
 import errno      
 import json 
+import re
 from threading import Thread
 from threading import Lock
 
@@ -83,27 +84,49 @@ class ClientManager:
 	#
 	def send_message(self, msg):
 		with self.lock:
+			print("")
+			print("SENDED MESSAGE: ", msg)
+			print("")
 			self.socket.send(msg)
 			self.is_alive_counter += 1
 
 	# Definition:
 	# This method is responsible for catch response messages from the server.
-	#
+	#	
+	#  ha az egész üzenet space karakterekből áll akkor droppoljuk
+	#  ha az uzenet elejét kapjuk meg, akkor eltároljuk, incoming-ba
+	# különben felbontjuk new line karakterenként, de előtte hozzáfűzzük az incoming-ot
+		# és külön külön a részekre ráhívjuk a 
+		# message = json.loads(data.decode("utf-8")) (try-catch-ben)
+		# mert egyszerre több üzenet is jöhet 
 	def receive(self):
+
+		incoming = b''
+		list_of_data = []
 
 		while True:
 			data = self.socket.recv(1024)		
-			message = json.loads(data.decode("utf-8"))
-			self.is_alive_counter -= 1
+			if data == b'\n':
+				continue
+			else:
+				incoming += data
+				
+			list_of_data = incoming.splitlines()
+			incoming = b''
 
-			if message.get("tag") == "ErrorMassage":
-				error_msg = "Error received: ", message.get("errorMsg")
-				sublime.error_message(error_msg)
+			for i in list_of_data:
+				print(i)
+				message = json.loads(i.decode("utf-8"))
+				self.is_alive_counter -= 1
 
-			else :
-				print("Még nem kezeljük ezt a hibát: ", message)
-				msg_dialog = "The received message is: " + str(message)
-				sublime.message_dialog(msg_dialog)
+				if message.get("tag") == "ErrorMassage":
+					error_msg = "Error received: ", message.get("errorMsg")
+					sublime.error_message(error_msg)
+
+				else :
+					print("Még nem kezeljük ezt a hibát: ", message)
+					msg_dialog = "The received message is: " + str(message)
+					sublime.message_dialog(msg_dialog)
 
 
 	# Definition:
@@ -223,7 +246,20 @@ class ClientManager:
 		self.get_selection()
 		path = str(self.selection_file_name).replace('\\','\\\\')
 
-		str_message = '{"tag":"PerformRefactoring","refactoring":' + refactoring_type + ',"modulePath":' + path + ',"editorSelection":' + self.selection + ',"details":['+ details +']}'
+		details_array = []
+		details_array.append(details)
+
+		data = {}
+		data['tag'] = 'PerformRefactoring'
+		data['refactoring'] = refactoring_type
+		data['modulePath'] = path
+		data['editorSelection'] = self.selection
+		data['details'] = details_array
+		str_message = json.dumps(data)
+
+		# str_message = '{"tag":"PerformRefactoring","refactoring":"' + refactoring_type + '","modulePath":"' + path + '","editorSelection":"' + self.selection + '","details":['+ details +']}'
+		# http://stackoverflow.com/questions/23110383/how-to-dynamically-build-a-json-object-with-python
+		# json objectumot csinálni, hogy ne kelljen szövegekkel bajlódni, így kéne megvalósítani
 		byte_message = str.encode(str_message)
 		self.send_message(byte_message)
 

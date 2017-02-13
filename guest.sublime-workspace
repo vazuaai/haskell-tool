@@ -163,7 +163,8 @@
 			"file": "/C/Users/Zoli/Desktop/haskell-tool-guest/A.hs",
 			"settings":
 			{
-				"buffer_size": 37,
+				"buffer_size": 59,
+				"encoding": "UTF-8",
 				"line_ending": "Windows"
 			}
 		}
@@ -191,10 +192,14 @@
 	"build_varint": "",
 	"command_palette":
 	{
-		"height": 392.0,
-		"last_filter": "",
+		"height": 196.0,
+		"last_filter": "view",
 		"selected_items":
 		[
+			[
+				"view",
+				"View: Toggle Menu"
+			],
 			[
 				"menu",
 				"View: Toggle Menu"
@@ -216,11 +221,11 @@
 				"Package Control: Install Package"
 			]
 		],
-		"width": 400.0
+		"width": 392.0
 	},
 	"console":
 	{
-		"height": 635.0,
+		"height": 211.0,
 		"history":
 		[
 			"asd",
@@ -423,18 +428,18 @@
 				{
 					"buffer": 0,
 					"file": "/C/Users/Zoli/Desktop/haskell-tool-guest/A.hs",
-					"semi_transient": true,
+					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 37,
+						"buffer_size": 59,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								37,
-								0
+								59,
+								59
 							]
 						],
 						"settings":
@@ -536,12 +541,12 @@
 	},
 	"select_project":
 	{
-		"height": 0.0,
+		"height": 500.0,
 		"last_filter": "",
 		"selected_items":
 		[
 		],
-		"width": 0.0
+		"width": 380.0
 	},
 	"select_symbol":
 	{

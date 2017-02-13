@@ -4,6 +4,10 @@
 		"selected_items":
 		[
 			[
+				"lis",
+				"list_of_data"
+			],
+			[
 				"erro",
 				"error_msg"
 			],
@@ -160,39 +164,30 @@
 	"buffers":
 	[
 		{
+			"contents": "#!/usr/bin/python27  \n\nfrom __future__ import with_statement\nimport sublime\nimport sublime_plugin\nimport os\nimport sys\nimport socket \nimport time \nimport errno      \nimport json \nimport re\nfrom threading import Thread\nfrom threading import Lock\n\n# Definition: \n# This class represents the client that commuicate with server.\n#\nclass ClientManager:\n\n\t_instance = None\n\n\t# Definition:\n\t# This method is the constructor of the client.\n\t#\n\tdef __init__(self):\n\n\t\tprint(\"I'm in init\")\n\t\tif ClientManager._instance is None:\n\n\t\t\t# client\n\t\t\tClientManager._instance = self\n\t\t\tself.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)\n\t\t\tself.connected = False\n\n\t\t\t# lock\n\t\t\tself.lock = Lock()\n\t\t\tself.lock.acquire()\n\n\t\t\t# packeges\n\t\t\tself.sent_packages = []\n\t\t\tself.current_packages = []\n\n\t\t\t# selection\n\t\t\tself.selection = \"\"\n\t\t\tself.selection_file_name = \"\"\n\n\t\n\t# Definition:\n\t# It's defined the host, the port and starts a connection thread.\n\t# \n\tdef startclient(self):\n\t\tself.host = \"127.0.0.1\"\n\t\tself.port = 4123\n\t\tself.is_alive_counter = 0\n\n\t\tthread = Thread(target = self.connect, args=())\n\t\tthread.start()\n\t\tprint(\"Connect thread started.\")\n\n\t# Definition:\n\t# \n\t# This methods task is connecting to the server and start a thread with receive() method.\n\t# After connection the lock released and the tool can send messages after that.\n\t#\n\tdef connect(self):\n\t\twhile True:\n\t\t\ttry:\n\t\t\t\tself.connection = self.socket.connect((self.host, self.port))\n\t\t\t\tself.lock.release()\n\t\t\t\tself.connected = True\n\t\t\t\tbreak\n\t\t\texcept Exception as e:\n\t\t\t\ttime.sleep(0.1)\n\n\t\tthread = Thread(target = self.receive, args=())\n\t\tthread.start()\n\t\tprint(\"Receive thread started.\")\n\n\t# Definition:\n\t# It's send a message to the server, if the lock released.\n\t#\n\t# @msg the message that we want to send\n\t#\n\tdef send_message(self, msg):\n\t\twith self.lock:\n\t\t\tprint(\"\")\n\t\t\tprint(\"SENDED MESSAGE: \", msg)\n\t\t\tprint(\"\")\n\t\t\tself.socket.send(msg)\n\t\t\tself.is_alive_counter += 1\n\n\t# Definition:\n\t# This method is responsible for catch response messages from the server.\n\t#\t\n\t#  ha az egész üzenet space karakterekből áll akkor droppoljuk\n\t#  ha az uzenet elejét kapjuk meg, akkor eltároljuk, incoming-ba\n\t# különben felbontjuk new line karakterenként, de előtte hozzáfűzzük az incoming-ot\n\t\t# és külön külön a részekre ráhívjuk a \n\t\t# message = json.loads(data.decode(\"utf-8\")) (try-catch-ben)\n\t\t# mert egyszerre több üzenet is jöhet \n\tdef receive(self):\n\n\t\tincoming = b''\n\t\tlist_of_data = []\n\n\t\twhile True:\n\t\t\tdata = self.socket.recv(1024)\t\t\n\t\t\tif data == b'\\n':\n\t\t\t\tcontinue\n\t\t\telse:\n\t\t\t\tincoming += data\n\t\t\t\t\n\t\t\tlist_of_data = incoming.splitlines()\n\t\t\tincoming = b''\n\n\t\t\tfor i in list_of_data:\n\t\t\t\tprint(i)\n\t\t\t\tmessage = json.loads(i.decode(\"utf-8\"))\n\t\t\t\tself.is_alive_counter -= 1\n\n\t\t\t\tif message.get(\"tag\") == \"ErrorMassage\":\n\t\t\t\t\terror_msg = \"Error received: \", message.get(\"errorMsg\")\n\t\t\t\t\tsublime.error_message(error_msg)\n\n\t\t\t\telse :\n\t\t\t\t\tprint(\"Még nem kezeljük ezt a hibát: \", message)\n\t\t\t\t\tmsg_dialog = \"The received message is: \" + str(message)\n\t\t\t\t\tsublime.message_dialog(msg_dialog)\n\n\n\t# Definition:\n\t# This method intended to make some steps that necessary for\n\t# the client, like asks for the opened folders in the project.\n\t#\n\tdef init_client(self, edit):\n\t\t# itt már rögtön elküldjük a szervernek a megnyitott mappákat?\n\t\tself.sent_packages = sublime.active_window().folders()\n\t\tself.edit = edit\n\n\t# Definition:\n\t# With this method the client notifies the server that it's still up and running.\n\t#\n\tdef keep_alive(self):\n\t\tmessage = b'{\"tag\":\"KeepAlive\",\"contents\":[]}'\n\t\tself.send_message(message)\n\n\tdef keep_alive_server(self, server):\n\t\t\n\t\twhile True:\n\n\t\t\tif self.is_alive_counter > 10:\n\t\t\t\t#server.run()\n\t\t\t\tprint(\"THE SERVER STARTED\")\n\t\t\t\tself.is_alive_counter = 0\n\t\t\telse: \n\t\t\t\ttime.sleep(1)\n\t\t\t\tself.keep_alive()\n\t\t\t\t#self.is_alive_counter += 1\n\n\n\tdef keep_alive_server_runner(self, server):\n\t\tthread = Thread(target = self.keep_alive_server, args=(server))\n\t\tthread.start()\n\n\t# Definition:\n\t# If the user add a new package to the project or remove one from it\n\t# the tool cathes these post events. They handled in HaskellToolPlugin.py, \n\t# exactly in the on_post_window_command() method. This method triggered \n\t# refresh_packages() that check the differencies between the sent_packages\n\t# and the current_packages. Depending on the event was a remove or add, the\n\t# client notifies the server.\n\t#\n\t# TODO: ide is kell majd az edit!!!\n\t#\n\tdef refresh_packages(self):\n\n\t\tself.current_packages = sublime.active_window().folders()\n\t\t# nagyobb vagy nagyobb egyenlő legyen a vizsgálat?\n\t\tif len(self.current_packages) >= len(self.sent_packages):\n\n\t\t\t# http://stackoverflow.com/questions/6486450/python-compute-list-difference\n\t\t\tself.difference = list(set(self.current_packages) - set(self.sent_packages))\n\n\t\t\tstr_message = '{\"tag\":\"AddPackages\",\"addedPathes\":['\n\n\t\t\tflag = True\n\n\t\t\tfor i in self.difference:\n\t\t\t\tif flag:\n\t\t\t\t\tflag = False\n\t\t\t\telse:\n\t\t\t\t\tstr_message += ','\n\n\t\t\t\tstr_message += i\n\n\t\t\tstr_message += ']}'\n\n\t\t\tbyte_message = str.encode(str_message)\n\t\t\tself.send_message(byte_message)\n\n\t\t\t# Ez így oké, vagy használjam a list.append()-et? remove-nál (list.remove()) hasonlóképp?\n\t\t\tself.sent_packages = self.current_packages\n\n\t\telif len(self.current_packages) < len(self.sent_packages):\n\n\t\t\tself.difference = list(set(self.sent_packages) - set(self.current_packages))\n\n\t\t\tstr_message = '{\"tag\":\"RemovePackages\",\"removedPathes\":['\n\n\t\t\tfor i in self.difference:\n\t\t\t\ti = str(i).replace('\\\\','\\\\\\\\')\n\t\t\t\t# itt még meg kell oldani, hogy vesszővel írja ki\n\t\t\t\tstr_message += i + ' '\n\n\t\t\tstr_message += ']}'\n\t\t\tbyte_message = str.encode(str_message)\n\t\t\tself.send_message(byte_message)\n\n\t\t\tself.sent_packages = self.current_packages\n\t\t\tprint(self.sent_packages)\n\n\t# Definition:\n\t# \n\tdef get_selection(self):\n\n\t\tview = sublime.active_window().active_view()\n\n\t\trow_begin, col_begin = view.rowcol(view.sel()[0].begin())\n\t\trow_end, col_end = view.rowcol(view.sel()[0].end())\n\n\t\trow_begin += 1\n\t\tcol_begin += 1\n\t\trow_end += 1\n\t\tcol_end += 1\n\n\t\tself.selection = str(row_begin) + \":\" + str(col_begin) + \"-\" + str(row_end) + \":\" + str(col_end)\n\t\tself.selection_file_name = view.file_name()\n\t\tprint(\"Selected range: \", self.selection)\n\n\tdef perform_refactoring(self, edit, refactoring_type, details):\n\t\t# Egyenlőre annyit csinál, hogy elküldi a kijelölést, a file abs útját\n\t\t# és egy beégetett \"rename\" refaktor type-ot\n\t\tself.edit = edit\n\t\tself.get_selection()\n\t\tpath = str(self.selection_file_name).replace('\\\\','\\\\\\\\')\n\n\t\tdetails_array = []\n\t\tdetails_array.append(details)\n\n\t\tdata = {}\n\t\tdata['tag'] = 'PerformRefactoring'\n\t\tdata['refactoring'] = refactoring_type\n\t\tdata['modulePath'] = path\n\t\tdata['editorSelection'] = self.selection\n\t\tdata['details'] = details_array\n\t\tstr_message = json.dumps(data)\n\n\t\t# str_message = '{\"tag\":\"PerformRefactoring\",\"refactoring\":\"' + refactoring_type + '\",\"modulePath\":\"' + path + '\",\"editorSelection\":\"' + self.selection + '\",\"details\":['+ details +']}'\n\t\t# http://stackoverflow.com/questions/23110383/how-to-dynamically-build-a-json-object-with-python\n\t\t# json objectumot csinálni, hogy ne kelljen szövegekkel bajlódni, így kéne megvalósítani\n\t\tbyte_message = str.encode(str_message)\n\t\tself.send_message(byte_message)\n\n\t# Definition:\n\t# If the user press the button represents stop client, the tool send a message\n\t# about this.\n\t#\n\tdef stop(self,edit):\n\t\tself.edit = edit\n\t\tmessage = b'{\"tag\":\"Stop\",\"contents\":[]}'\n\t\tself.send_message(message)\n\t\tself.socket.close()\n\n\t# Definition:\n\t# If the user modifies (save or delete file) a file, the tool catches the post \n\t# event and send a message to the server depending on the type of action.\n\t#\n\t# @path is the absolute path of the file which modified \n\t# @action_type can be \"saved\" or \"removed\"\n\t# \n\t# The triggers of the reload() method is in the HaskellToolPlugin.py\n\t# The exact methods that listen the events and trigger the reload() are \n\t# on_post_save() and on_close(self, view).\n\t#\n\t# Comment: kell majd itt az edit a paraméter listába erre még visszatérünk\n\t#\n\tdef reload(self, path, action_tpye):\n\n\t\tpath = str(path).replace('\\\\','\\\\\\\\')\n\n\t\tif action_tpye == \"saved\":\n\t\t\tstr_message = '{\"tag\":\"ReLoad\",\"changedModules\":['\t\n\t\t\tstr_message += path\t+ '], \"removedModules\":[]}'\n\t\t\tbyte_message = str.encode(str_message)\n\t\t\tself.send_message(byte_message)\n\n\t\telif action_tpye == \"removed\":\n\t\t\tstr_message = '{\"tag\":\"ReLoad\",\"changedModules\":[], \"removedModules\":['\t\t\n\t\t\tstr_message += path + ']}'\n\t\t\tbyte_message = str.encode(str_message)\n\t\t\tself.send_message(byte_message)\n\n# static method \ndef get_client_manager():\n\n\tif ClientManager._instance is None:\n\t\tClientManager._instance = ClientManager()\n\n\treturn ClientManager._instance",
 			"file": "client/ClientManager.py",
+			"file_size": 9087,
+			"file_write_time": 131314730979944400,
 			"settings":
 			{
-				"buffer_size": 7588,
+				"buffer_size": 8711,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "RefreshCommand.py",
+			"settings":
+			{
+				"buffer_size": 314,
 				"encoding": "UTF-8",
 				"line_ending": "Windows"
 			}
 		},
 		{
-			"file": "ServerControllerCommand.py",
-			"settings":
-			{
-				"buffer_size": 988,
-				"encoding": "UTF-8",
-				"line_ending": "Windows"
-			}
-		},
-		{
-			"contents": "#!/usr/bin/python27 \n\nimport sublime\nimport sublime_plugin\nimport time \n\nfrom .client.ClientManager import ClientManager\n\nclass HaskellToolsPlugin(sublime_plugin.EventListener):\n\n    def on_load(self, view):\n        print(view.file_name(), \"just got loaded\")\n\n    def on_pre_save(self, view):\n        print(view.file_name(), \"is about to be saved\")\n\n    def on_post_save(self, view):\n        print(view.file_name(), \"just got saved\")\n        if ClientManager._instance.connected is True:\n            ClientManager._instance.reload(view.file_name(), \"saved\")\n\n    def on_new(self, view):\n        print(\"new file\")\n\n    def on_modified(self, view):\n        print(view.file_name(), \"modified\")\n\n    def on_activated(self, view):\n        print(view.file_name(), \"is now the active view\")\n\n    def on_close(self, view):\n        print(view.file_name(), \"is no more\")\n        if ClientManager._instance.connected is True:\n            ClientManager._instance.reload(view.file_name(), \"removed\")\n\n    def on_clone(self, view):\n        print(view.file_name(), \"just got cloned\")\n\n    def on_window_command(self, view, command_name, args):\n        print(command_name, \"window_command\")\n\n    def on_post_window_command(self, view, command_name, args):\n        print(command_name, \"window_command\")\n        \n        if command_name == \"prompt_add_folder\":\n            ClientManager._instance.refresh_packages()\n        elif command_name == \"remove_folder\":\n            ClientManager._instance.refresh_packages()\n        elif command_name == \"refresh_folder_list\":\n            ClientManager._instance.refresh_packages()\n\n    def on_view_command(self, view, command_name, args):\n        print(command_name)",
 			"file": "HaskellToolsPlugin.py",
-			"file_size": 1847,
-			"file_write_time": 131301636363069775,
 			"settings":
 			{
 				"buffer_size": 1691,
-				"line_ending": "Windows"
-			}
-		},
-		{
-			"file": "server/ServerManager.py",
-			"settings":
-			{
-				"buffer_size": 907,
 				"encoding": "UTF-8",
 				"line_ending": "Windows"
 			}
@@ -201,19 +196,36 @@
 			"file": "todo",
 			"settings":
 			{
-				"buffer_size": 1504,
+				"buffer_size": 2205,
 				"encoding": "UTF-8",
 				"line_ending": "Windows",
 				"name": "TODO"
 			}
 		},
 		{
-			"contents": "os69zH1Go2\nos69zH1Go2",
+			"file": "RenameCommand.py",
 			"settings":
 			{
-				"buffer_size": 21,
-				"line_ending": "Windows",
-				"name": "os69zH1Go2"
+				"buffer_size": 569,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "Side Bar.sublime-menu",
+			"settings":
+			{
+				"buffer_size": 190,
+				"encoding": "UTF-8",
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "CloseFileByName.py",
+			"settings":
+			{
+				"buffer_size": 152,
+				"encoding": "UTF-8",
+				"line_ending": "Windows"
 			}
 		}
 	],
@@ -269,7 +281,7 @@
 	},
 	"console":
 	{
-		"height": 188.0,
+		"height": 278.0,
 		"history":
 		[
 			"asd",
@@ -326,20 +338,26 @@
 	},
 	"expanded_folders":
 	[
-		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages"
+		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages",
+		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool",
+		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/client",
+		"/C/Users/Zoli/Desktop/legenybucsu"
 	],
 	"file_history":
 	[
-		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/ConnectToHaskellToolCommand.py",
+		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/haskell-tools-plugin.sublime-project",
+		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/Side Bar.sublime-menu",
 		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/Main.sublime-menu",
-		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/HaskellToolsPlugin.py",
-		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/RenameCommand.py",
-		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/RefactoringCommand.py",
+		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/IsDirty.py",
 		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/ServerControllerCommand.py",
+		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/HaskellToolsPlugin.py",
+		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/server/ServerManager.py",
+		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/RenameCommand.py",
+		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/ConnectToHaskellToolCommand.py",
+		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/RefactoringCommand.py",
 		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/StopClientCommand.py",
 		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/RefreshCommand.py",
 		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/PopUpCommand.py",
-		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/server/ServerManager.py",
 		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/KeepAliveCommand.py",
 		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/Refactoring.py",
 		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/ViewPlugin.py",
@@ -351,7 +369,6 @@
 		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/User/Commands.py",
 		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/RefreshPackagesCommand.py",
 		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/FoldersCommand.py",
-		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/IsDirty.py",
 		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/IsModified.py",
 		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/ServerManager.py",
 		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/ClientManager.py",
@@ -441,6 +458,7 @@
 		"case_sensitive": true,
 		"find_history":
 		[
+			"LoadedModules",
 			"self.message",
 			"send_message",
 			"view",
@@ -470,7 +488,7 @@
 	"groups":
 	[
 		{
-			"selected": 5,
+			"selected": 1,
 			"sheets":
 			[
 				{
@@ -479,15 +497,15 @@
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 7588,
+						"buffer_size": 8711,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								2081,
-								2081
+								4519,
+								4519
 							]
 						],
 						"settings":
@@ -496,39 +514,38 @@
 							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
-						"translation.y": 1740.0,
+						"translation.y": 3740.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 1,
+					"stack_index": 4,
 					"type": "text"
 				},
 				{
 					"buffer": 1,
-					"file": "ServerControllerCommand.py",
+					"file": "RefreshCommand.py",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 988,
+						"buffer_size": 314,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								704,
-								704
+								225,
+								225
 							]
 						],
 						"settings":
 						{
-							"syntax": "Packages/Python/Python.sublime-syntax",
-							"translate_tabs_to_spaces": false
+							"syntax": "Packages/Python/Python.sublime-syntax"
 						},
 						"translation.x": 0.0,
-						"translation.y": 267.0,
+						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 5,
+					"stack_index": 0,
 					"type": "text"
 				},
 				{
@@ -555,56 +572,27 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 600.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 4,
-					"type": "text"
-				},
-				{
-					"buffer": 3,
-					"file": "server/ServerManager.py",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 907,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								218,
-								218
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Python/Python.sublime-syntax",
-							"translate_tabs_to_spaces": false
-						},
-						"translation.x": -0.0,
-						"translation.y": 60.0,
+						"translation.y": 411.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 3,
 					"type": "text"
 				},
 				{
-					"buffer": 4,
+					"buffer": 3,
 					"file": "todo",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 1504,
+						"buffer_size": 2205,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								1420,
-								1420
+								2203,
+								2203
 							]
 						],
 						"settings":
@@ -614,7 +602,35 @@
 							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
-						"translation.y": 140.0,
+						"translation.y": 880.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 5,
+					"type": "text"
+				},
+				{
+					"buffer": 4,
+					"file": "RenameCommand.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 569,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								227,
+								227
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 2,
@@ -622,30 +638,60 @@
 				},
 				{
 					"buffer": 5,
+					"file": "Side Bar.sublime-menu",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 21,
+						"buffer_size": 190,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								21,
-								21
+								148,
+								148
 							]
 						],
 						"settings":
 						{
-							"auto_name": "os69zH1Go2",
-							"syntax": "Packages/Text/Plain text.tmLanguage"
+							"syntax": "Packages/JavaScript/JSON.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 0,
+					"stack_index": 1,
+					"type": "text"
+				},
+				{
+					"buffer": 6,
+					"file": "CloseFileByName.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 152,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								152,
+								152
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 6,
 					"type": "text"
 				}
 			]
@@ -760,7 +806,7 @@
 	"show_open_files": true,
 	"show_tabs": true,
 	"side_bar_visible": true,
-	"side_bar_width": 185.0,
+	"side_bar_width": 250.0,
 	"status_bar_visible": true,
 	"template_settings":
 	{
