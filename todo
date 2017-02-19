@@ -54,7 +54,9 @@ TODO:
 
 	- RefreshCommand-tól kapott paths alapján frissíteni a package-ket
 		- mi legyen azokkal az on_post_window_command() okkal amikt HaskellToolsPlugin-ban
-		vannak? Azok is hívják a refresh_packeges() fv-t?
+		vannak? Azok is hívják a refresh_packeges() fv-t? 
+
+	- toggle / remove in side bar [KÉSZ]
 
 	COMMITÁLNI!!!!
 	

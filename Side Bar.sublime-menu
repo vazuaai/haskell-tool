@@ -6,13 +6,5 @@
         "args": {
             "paths": []
         }
-    },
-    { "caption": "-" },
-    {
-        "caption": "Untoggle From Haskell Tool",
-        "command": "untoggle",
-        "args": {
-            "paths": []
-        }
-    },
+    }
 ]

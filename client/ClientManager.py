@@ -176,7 +176,7 @@ class ClientManager:
 	def refresh_packages(self, paths, command):
 
 		data = {}
-		#paths.replace('\\','\\\\')
+		paths.replace('\\','\\\\')
 		if(command == "toggle"):	
 			data['tag'] = 'AddPackages'
 			data['addedPathes'] = paths
@@ -189,55 +189,8 @@ class ClientManager:
 		
 
 		str_message = json.dumps(data)
-		self.send_message(str_message)
-
-		#byte_message = str.encode(str_message)
-		#self.send_message(byte_message)
-
-		# self.current_packages = sublime.active_window().folders()
-		# # nagyobb vagy nagyobb egyenlő legyen a vizsgálat?
-		# if len(self.current_packages) >= len(self.sent_packages):
-
-		# 	# http://stackoverflow.com/questions/6486450/python-compute-list-difference
-		# 	self.difference = list(set(self.current_packages) - set(self.sent_packages))
-
-		# 	str_message = '{"tag":"AddPackages","addedPathes":['
-
-		# 	flag = True
-
-		# 	for i in self.difference:
-		# 		if flag:
-		# 			flag = False
-		# 		else:
-		# 			str_message += ','
-
-		# 		str_message += i
-
-		# 	str_message += ']}'
-
-		# 	byte_message = str.encode(str_message)
-		# 	self.send_message(byte_message)
-
-		# 	# Ez így oké, vagy használjam a list.append()-et? remove-nál (list.remove()) hasonlóképp?
-		# 	self.sent_packages = self.current_packages
-
-		# elif len(self.current_packages) < len(self.sent_packages):
-
-		# 	self.difference = list(set(self.sent_packages) - set(self.current_packages))
-
-		# 	str_message = '{"tag":"RemovePackages","removedPathes":['
-
-		# 	for i in self.difference:
-		# 		i = str(i).replace('\\','\\\\')
-		# 		# itt még meg kell oldani, hogy vesszővel írja ki
-		# 		str_message += i + ' '
-
-		# 	str_message += ']}'
-		# 	byte_message = str.encode(str_message)
-		# 	self.send_message(byte_message)
-
-		# 	self.sent_packages = self.current_packages
-		# 	print(self.sent_packages)
+		byte_message = str.encode(str_message)
+		self.send_message(byte_message)
 
 	# Definition:
 	# 
@@ -258,8 +211,7 @@ class ClientManager:
 		print("Selected range: ", self.selection)
 
 	def perform_refactoring(self, edit, refactoring_type, details):
-		# Egyenlőre annyit csinál, hogy elküldi a kijelölést, a file abs útját
-		# és egy beégetett "rename" refaktor type-ot
+
 		self.edit = edit
 		self.get_selection()
 		path = str(self.selection_file_name).replace('\\','\\\\')
@@ -275,9 +227,6 @@ class ClientManager:
 		data['details'] = details_array
 		str_message = json.dumps(data)
 
-		# str_message = '{"tag":"PerformRefactoring","refactoring":"' + refactoring_type + '","modulePath":"' + path + '","editorSelection":"' + self.selection + '","details":['+ details +']}'
-		# http://stackoverflow.com/questions/23110383/how-to-dynamically-build-a-json-object-with-python
-		# json objectumot csinálni, hogy ne kelljen szövegekkel bajlódni, így kéne megvalósítani
 		byte_message = str.encode(str_message)
 		self.send_message(byte_message)
 
@@ -307,18 +256,22 @@ class ClientManager:
 	def reload(self, path, action_tpye):
 
 		path = str(path).replace('\\','\\\\')
+		changed_modules_array = []
+		removed_modules_array = []
+		data = {}
 
 		if action_tpye == "saved":
-			str_message = '{"tag":"ReLoad","changedModules":['	
-			str_message += path	+ '], "removedModules":[]}'
-			byte_message = str.encode(str_message)
-			self.send_message(byte_message)
+			changed_modules_array.append(path)
 
 		elif action_tpye == "removed":
-			str_message = '{"tag":"ReLoad","changedModules":[], "removedModules":['		
-			str_message += path + ']}'
-			byte_message = str.encode(str_message)
-			self.send_message(byte_message)
+			removed_modules_array.append(path)
+
+		data['tag'] = 'ReLoad'
+		data['changedModules'] = changed_modules_array
+		data['removedModules'] = removed_modules_array
+		str_message = json.dumps(data)
+		byte_message = str.encode(str_message)
+		self.send_message(byte_message)
 
 # static method 
 def get_client_manager():
