@@ -29,17 +29,4 @@ class ServerControllerCommand(sublime_plugin.TextCommand):
 		self.server.run()
 		self.client.startclient()
 		self.client.init_client(edit)
-		#time.sleep(3)
-		#self.client.keep_alive_server(self.server)
-
-		#self.client.keep_alive()
-		#self.add_packages()
-		#remove_packages()
-		#perform_refactoring()
-		#self.stop()
-		#self.disconnect()
-		#self.reload()
-
-		#self.client.send_message(msg)
-
 	

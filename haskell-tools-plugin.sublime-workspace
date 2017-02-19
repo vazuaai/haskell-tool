@@ -171,45 +171,26 @@
 			"file": "todo",
 			"settings":
 			{
-				"buffer_size": 2458,
+				"buffer_size": 2259,
 				"encoding": "UTF-8",
 				"line_ending": "Windows"
 			}
 		},
 		{
-			"file": "client/ClientManager.py",
+			"file": "server/ServerManager.py",
 			"settings":
 			{
-				"buffer_size": 9493,
-				"encoding": "UTF-8",
+				"buffer_size": 902,
 				"line_ending": "Windows"
 			}
 		},
 		{
-			"file": "Side Bar.sublime-menu",
+			"contents": "closefilebyname.py\nconnecttohaskelltoolcommand.py\nfolderscommand.py\nisdirty.py\nismodified.py\nopenfilebynamecommand.py\noutputpanelcommand.py\nrefactoringcommand.py\nstopclientcommand.py",
 			"settings":
 			{
-				"buffer_size": 165,
-				"encoding": "UTF-8",
-				"line_ending": "Windows"
-			}
-		},
-		{
-			"file": "ToggleCommand.py",
-			"settings":
-			{
-				"buffer_size": 328,
-				"encoding": "UTF-8",
-				"line_ending": "Windows"
-			}
-		},
-		{
-			"file": "HaskellToolsPlugin.py",
-			"settings":
-			{
-				"buffer_size": 1828,
-				"encoding": "UTF-8",
-				"line_ending": "Windows"
+				"buffer_size": 182,
+				"line_ending": "Windows",
+				"name": "closefilebyname.py"
 			}
 		}
 	],
@@ -265,7 +246,7 @@
 	},
 	"console":
 	{
-		"height": 189.0,
+		"height": 534.0,
 		"history":
 		[
 			"asd",
@@ -323,24 +304,25 @@
 	"expanded_folders":
 	[
 		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages",
-		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool"
+		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool",
+		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/server"
 	],
 	"file_history":
 	[
-		"/E/Suli/Halado Java/gyak_01.txt",
+		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/ServerControllerCommand.py",
 		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/client/ClientManager.py",
-		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/UntoggleCommand.py",
 		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/HaskellToolsPlugin.py",
-		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/ToggleCommand.py",
+		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/server/ServerManager.py",
 		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/Side Bar.sublime-menu",
+		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/ToggleCommand.py",
+		"/E/Suli/Halado Java/gyak_01.txt",
+		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/UntoggleCommand.py",
 		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/todo",
 		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/CloseFileByName.py",
 		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/RenameCommand.py",
 		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/haskell-tools-plugin.sublime-project",
 		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/Main.sublime-menu",
 		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/IsDirty.py",
-		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/ServerControllerCommand.py",
-		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/server/ServerManager.py",
 		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/ConnectToHaskellToolCommand.py",
 		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/RefactoringCommand.py",
 		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/StopClientCommand.py",
@@ -486,15 +468,15 @@
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 2458,
+						"buffer_size": 2259,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								2438,
-								2438
+								2090,
+								2090
 							]
 						],
 						"settings":
@@ -503,27 +485,27 @@
 							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
-						"translation.y": 880.0,
+						"translation.y": 740.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 4,
+					"stack_index": 1,
 					"type": "text"
 				},
 				{
 					"buffer": 1,
-					"file": "client/ClientManager.py",
+					"file": "server/ServerManager.py",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 9493,
+						"buffer_size": 902,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								8916,
-								8916
+								280,
+								280
 							]
 						],
 						"settings":
@@ -531,8 +513,8 @@
 							"syntax": "Packages/Python/Python.sublime-syntax",
 							"translate_tabs_to_spaces": false
 						},
-						"translation.x": 0.0,
-						"translation.y": 6240.0,
+						"translation.x": 342.0,
+						"translation.y": 300.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 0,
@@ -540,90 +522,30 @@
 				},
 				{
 					"buffer": 2,
-					"file": "Side Bar.sublime-menu",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 165,
+						"buffer_size": 182,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								165,
-								165
+								79,
+								68
 							]
 						],
 						"settings":
 						{
-							"syntax": "Packages/JavaScript/JSON.sublime-syntax",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 1,
-					"type": "text"
-				},
-				{
-					"buffer": 3,
-					"file": "ToggleCommand.py",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 328,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								195,
-								195
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Python/Python.sublime-syntax"
+							"auto_name": "closefilebyname.py",
+							"syntax": "Packages/Text/Plain text.tmLanguage"
 						},
 						"translation.x": 0.0,
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 2,
-					"type": "text"
-				},
-				{
-					"buffer": 4,
-					"file": "HaskellToolsPlugin.py",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 1828,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								1828,
-								1828
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Python/Python.sublime-syntax",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 631.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 3,
 					"type": "text"
 				}
 			]
@@ -738,7 +660,7 @@
 	"show_open_files": true,
 	"show_tabs": true,
 	"side_bar_visible": true,
-	"side_bar_width": 151.0,
+	"side_bar_width": 356.0,
 	"status_bar_visible": true,
 	"template_settings":
 	{

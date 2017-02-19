@@ -150,13 +150,12 @@ class ClientManager:
 		while True:
 
 			if self.is_alive_counter > 10:
-				#server.run()
+				server.run()
 				print("THE SERVER STARTED")
 				self.is_alive_counter = 0
 			else: 
 				time.sleep(1)
 				self.keep_alive()
-				#self.is_alive_counter += 1
 
 
 	def keep_alive_server_runner(self, server):
