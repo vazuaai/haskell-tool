@@ -2,10 +2,17 @@
     { "caption": "-" },
     {
         "caption": "Toggle In Haskell Tool",
-        "command": "refresh",
+        "command": "toggle",
         "args": {
             "paths": []
         }
     },
-    { "caption": "-" }
+    { "caption": "-" },
+    {
+        "caption": "Untoggle From Haskell Tool",
+        "command": "untoggle",
+        "args": {
+            "paths": []
+        }
+    },
 ]

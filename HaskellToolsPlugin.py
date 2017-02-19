@@ -39,15 +39,17 @@ class HaskellToolsPlugin(sublime_plugin.EventListener):
     def on_window_command(self, view, command_name, args):
         print(command_name, "window_command")
 
-    def on_post_window_command(self, view, command_name, args):
+    def on_post_window_command(self, window, command_name, args):
         print(command_name, "window_command")
         
-        if command_name == "prompt_add_folder":
-            ClientManager._instance.refresh_packages()
-        elif command_name == "remove_folder":
-            ClientManager._instance.refresh_packages()
-        elif command_name == "refresh_folder_list":
-            ClientManager._instance.refresh_packages()
+        # if command_name == "prompt_add_folder":
+        # #     ClientManager._instance.refresh_packages(command_name, paths=[])
+        # paths = []
+        # paths.append(view.file_name())
+        # if command_name == "remove_folder":
+        #     ClientManager._instance.refresh_packages(command_name, paths)
+        # # elif command_name == "refresh_folder_list":
+        # #     ClientManager._instance.refresh_packages(command_name, paths=[])
 
     def on_view_command(self, view, command_name, args):
         print(command_name)

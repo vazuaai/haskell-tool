@@ -173,53 +173,71 @@ class ClientManager:
 	#
 	# TODO: ide is kell majd az edit!!!
 	#
-	def refresh_packages(self):
+	def refresh_packages(self, paths, command):
 
-		self.current_packages = sublime.active_window().folders()
-		# nagyobb vagy nagyobb egyenlő legyen a vizsgálat?
-		if len(self.current_packages) >= len(self.sent_packages):
+		data = {}
+		#paths.replace('\\','\\\\')
+		if(command == "toggle"):	
+			data['tag'] = 'AddPackages'
+			data['addedPathes'] = paths
+			print("ADDEDPATH: ", paths)
+			
+		elif (command == "remove_folder"):
+			data['tag'] = 'RemovePackages'
+			data['removedPathes'] = paths
+			print("REMOVEDPATH: ", paths)
+		
 
-			# http://stackoverflow.com/questions/6486450/python-compute-list-difference
-			self.difference = list(set(self.current_packages) - set(self.sent_packages))
+		str_message = json.dumps(data)
+		self.send_message(str_message)
 
-			str_message = '{"tag":"AddPackages","addedPathes":['
+		#byte_message = str.encode(str_message)
+		#self.send_message(byte_message)
 
-			flag = True
+		# self.current_packages = sublime.active_window().folders()
+		# # nagyobb vagy nagyobb egyenlő legyen a vizsgálat?
+		# if len(self.current_packages) >= len(self.sent_packages):
 
-			for i in self.difference:
-				if flag:
-					flag = False
+		# 	# http://stackoverflow.com/questions/6486450/python-compute-list-difference
+		# 	self.difference = list(set(self.current_packages) - set(self.sent_packages))
 
-				else:
-					str_message += ','
+		# 	str_message = '{"tag":"AddPackages","addedPathes":['
 
-				str_message += i
+		# 	flag = True
 
-			str_message += ']}'
+		# 	for i in self.difference:
+		# 		if flag:
+		# 			flag = False
+		# 		else:
+		# 			str_message += ','
 
-			byte_message = str.encode(str_message)
-			self.send_message(byte_message)
+		# 		str_message += i
 
-			# Ez így oké, vagy használjam a list.append()-et? remove-nál (list.remove()) hasonlóképp?
-			self.sent_packages = self.current_packages
+		# 	str_message += ']}'
 
-		elif len(self.current_packages) < len(self.sent_packages):
+		# 	byte_message = str.encode(str_message)
+		# 	self.send_message(byte_message)
 
-			self.difference = list(set(self.sent_packages) - set(self.current_packages))
+		# 	# Ez így oké, vagy használjam a list.append()-et? remove-nál (list.remove()) hasonlóképp?
+		# 	self.sent_packages = self.current_packages
 
-			str_message = '{"tag":"RemovePackages","removedPathes":['
+		# elif len(self.current_packages) < len(self.sent_packages):
 
-			for i in self.difference:
-				i = str(i).replace('\\','\\\\')
-				# itt még meg kell oldani, hogy vesszővel írja ki
-				str_message += i + ' '
+		# 	self.difference = list(set(self.sent_packages) - set(self.current_packages))
 
-			str_message += ']}'
-			byte_message = str.encode(str_message)
-			self.send_message(byte_message)
+		# 	str_message = '{"tag":"RemovePackages","removedPathes":['
 
-			self.sent_packages = self.current_packages
-			print(self.sent_packages)
+		# 	for i in self.difference:
+		# 		i = str(i).replace('\\','\\\\')
+		# 		# itt még meg kell oldani, hogy vesszővel írja ki
+		# 		str_message += i + ' '
+
+		# 	str_message += ']}'
+		# 	byte_message = str.encode(str_message)
+		# 	self.send_message(byte_message)
+
+		# 	self.sent_packages = self.current_packages
+		# 	print(self.sent_packages)
 
 	# Definition:
 	# 

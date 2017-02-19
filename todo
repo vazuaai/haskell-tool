@@ -48,9 +48,13 @@ TODO:
 	- szépítésnek ha toggle-t nyomunk akkor lássuk, hogy mi töltődik be (Loading...) 
 		- valahogy jelölni
 
-	- def perform_refactoring -ban a JSON üzenetet egy a fv-ben leírt módon
+	- def perform_refactoring -ban a JSON üzenetet egy a fv-ben leírt módon [KÉSZ]
 
 	- tisztítani a kódot
+
+	- RefreshCommand-tól kapott paths alapján frissíteni a package-ket
+		- mi legyen azokkal az on_post_window_command() okkal amikt HaskellToolsPlugin-ban
+		vannak? Azok is hívják a refresh_packeges() fv-t?
 
 	COMMITÁLNI!!!!
 	
