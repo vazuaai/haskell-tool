@@ -225,7 +225,7 @@
 	},
 	"console":
 	{
-		"height": 211.0,
+		"height": 407.0,
 		"history":
 		[
 			"asd",
@@ -438,8 +438,8 @@
 						"selection":
 						[
 							[
-								36,
-								36
+								16,
+								17
 							]
 						],
 						"settings":

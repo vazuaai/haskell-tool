@@ -32,6 +32,7 @@ class ClientManager:
 			ClientManager._instance = self
 			self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 			self.connected = False
+			self.is_alive_counter = 0
 
 			# lock
 			self.lock = Lock()
@@ -52,7 +53,6 @@ class ClientManager:
 	def startclient(self):
 		self.host = "127.0.0.1"
 		self.port = 4123
-		self.is_alive_counter = 0
 
 		thread = Thread(target = self.connect, args=())
 		thread.start()
@@ -92,13 +92,6 @@ class ClientManager:
 
 	# Definition:
 	# This method is responsible for catch response messages from the server.
-	#	
-	#  ha az egész üzenet space karakterekből áll akkor droppoljuk
-	#  ha az uzenet elejét kapjuk meg, akkor eltároljuk, incoming-ba
-	# különben felbontjuk new line karakterenként, de előtte hozzáfűzzük az incoming-ot
-		# és külön külön a részekre ráhívjuk a 
-		# message = json.loads(data.decode("utf-8")) (try-catch-ben)
-		# mert egyszerre több üzenet is jöhet 
 	def receive(self):
 
 		incoming = b''
@@ -115,7 +108,9 @@ class ClientManager:
 			incoming = b''
 
 			for i in list_of_data:
-				print(i)
+				print("")
+				print("RECEIVED MESSAGE: ",i)
+				print("")
 				message = json.loads(i.decode("utf-8"))
 				self.is_alive_counter -= 1
 
@@ -142,8 +137,15 @@ class ClientManager:
 	# With this method the client notifies the server that it's still up and running.
 	#
 	def keep_alive(self):
-		message = b'{"tag":"KeepAlive","contents":[]}'
-		self.send_message(message)
+		data = {}
+		contents_array = []
+		
+		data['tag'] = 'KeepAlive'
+		data['contents'] = contents_array
+
+		str_message = json.dumps(data)
+		byte_message = str.encode(str_message)
+		self.send_message(byte_message)
 
 	def keep_alive_server(self, server):
 		
@@ -234,10 +236,16 @@ class ClientManager:
 	# about this.
 	#
 	def stop(self,edit):
-		self.edit = edit
-		message = b'{"tag":"Stop","contents":[]}'
-		self.send_message(message)
-		self.socket.close()
+
+		data = {}
+		contents_array = []
+		
+		data['tag'] = 'Stop'
+		data['contents'] = contents_array
+
+		str_message = json.dumps(data)
+		byte_message = str.encode(str_message)
+		self.send_message(byte_message)
 
 	# Definition:
 	# If the user modifies (save or delete file) a file, the tool catches the post 

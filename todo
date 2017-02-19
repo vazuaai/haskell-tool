@@ -55,4 +55,12 @@ TODO:
 	- toggle / remove in side bar [KÉSZ]
 
 	COMMITÁLNI!!!!
-	
+
+	Client messages:
+		- KeepAlive [hibát ad vissza]
+		- AddPackages [OK]
+		- RemovePackages [OK]
+		- PerformRefactoring [kilép a szerver]
+		- Stop [OK]
+		- Disconnect [még nincs implementálva]
+		- ReLoad [OK]
