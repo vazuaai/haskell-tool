@@ -46,7 +46,7 @@ TODO:
 
 TODO: 
 	- szépítésnek ha toggle-t nyomunk akkor lássuk, hogy mi töltődik be (Loading...) 
-		- valahogy jelölni 
+		- valahogy jelölni [ ]
 
 	- def perform_refactoring -ban a JSON üzenetet egy a fv-ben leírt módon [KÉSZ]
 
@@ -57,10 +57,27 @@ TODO:
 	COMMITÁLNI!!!!
 
 	Client messages:
-		- KeepAlive [hibát ad vissza]
+		- KeepAlive [OK]
 		- AddPackages [OK]
 		- RemovePackages [OK]
-		- PerformRefactoring [kilép a szerver]
+		- PerformRefactoring [KÉSZ]
 		- Stop [OK]
 		- Disconnect [még nincs implementálva]
 		- ReLoad [OK]
+
+TODO:
+	- a toggle gomb több mappát is tud küldeni ezt megvalósítani,
+	hogy mindegyiket küldje el [KÉSZ]
+
+	- https://github.com/haskell-tools/haskell-tools#running-the-cli [ ]
+
+	- az editor mentse el, hogy mely packageket toggleztuk eddig
+		- file-ba írással, utánajárni van-e valami konvenció hogy
+		a plugin hogyan mentik ezket
+
+	- az exe (server) helye egy beállítási lehetőség legyen
+		- haskell tools-on belül legyen egy settings és ott lehessen megdni az exe-t
+
+	- json dump segítségével config file-t készíteni
+		- indulsákor ezt filet beolvassuk,
+		- ha valami változás van akkor ebbe mentsunk

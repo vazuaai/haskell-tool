@@ -168,10 +168,10 @@
 	"buffers":
 	[
 		{
-			"file": "todo",
+			"file": "client/ClientManager.py",
 			"settings":
 			{
-				"buffer_size": 2465,
+				"buffer_size": 7429,
 				"encoding": "UTF-8",
 				"line_ending": "Windows"
 			}
@@ -180,7 +180,16 @@
 			"file": "server/ServerManager.py",
 			"settings":
 			{
-				"buffer_size": 902,
+				"buffer_size": 920,
+				"encoding": "UTF-8",
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "todo",
+			"settings":
+			{
+				"buffer_size": 3046,
 				"encoding": "UTF-8",
 				"line_ending": "Windows"
 			}
@@ -238,7 +247,7 @@
 	},
 	"console":
 	{
-		"height": 60.0,
+		"height": 285.0,
 		"history":
 		[
 			"asd",
@@ -302,15 +311,15 @@
 	],
 	"file_history":
 	[
+		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/todo",
+		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/server/ServerManager.py",
+		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/HaskellToolsPlugin.py",
 		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/client/ClientManager.py",
 		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/ServerControllerCommand.py",
-		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/HaskellToolsPlugin.py",
-		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/server/ServerManager.py",
 		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/Side Bar.sublime-menu",
 		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/ToggleCommand.py",
 		"/E/Suli/Halado Java/gyak_01.txt",
 		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/UntoggleCommand.py",
-		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/todo",
 		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/CloseFileByName.py",
 		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/RenameCommand.py",
 		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/haskell-tools-plugin.sublime-project",
@@ -420,6 +429,7 @@
 		"case_sensitive": true,
 		"find_history":
 		[
+			"refresh_packages",
 			"())\n",
 			"Refresh",
 			"LoadedModules",
@@ -452,53 +462,24 @@
 	"groups":
 	[
 		{
-			"selected": 1,
+			"selected": 2,
 			"sheets":
 			[
 				{
 					"buffer": 0,
-					"file": "todo",
+					"file": "client/ClientManager.py",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 2465,
+						"buffer_size": 7429,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								2202,
-								2202
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Text/Plain text.tmLanguage",
-							"translate_tabs_to_spaces": false
-						},
-						"translation.x": 0.0,
-						"translation.y": 1030.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 1,
-					"type": "text"
-				},
-				{
-					"buffer": 1,
-					"file": "server/ServerManager.py",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 902,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								760,
-								760
+								886,
+								886
 							]
 						],
 						"settings":
@@ -507,7 +488,65 @@
 							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
-						"translation.y": 0.0,
+						"translation.y": 905.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 2,
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "server/ServerManager.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 920,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								727,
+								727
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 420.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": "todo",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 3046,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								3046,
+								3046
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Text/Plain text.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 1200.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 0,
@@ -625,7 +664,7 @@
 	"show_open_files": true,
 	"show_tabs": true,
 	"side_bar_visible": true,
-	"side_bar_width": 138.0,
+	"side_bar_width": 325.0,
 	"status_bar_visible": true,
 	"template_settings":
 	{

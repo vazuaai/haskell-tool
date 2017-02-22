@@ -177,7 +177,11 @@ class ClientManager:
 	def refresh_packages(self, paths, command):
 
 		data = {}
-		paths.replace('\\','\\\\')
+		for i in paths:
+			i.replace('\\','\\\\')
+			print("Path: ", i)
+		print("Path: ", paths)
+		#paths.replace('\\','\\\\')
 		if(command == "toggle"):	
 			data['tag'] = 'AddPackages'
 			data['addedPathes'] = paths
@@ -215,7 +219,9 @@ class ClientManager:
 
 		self.edit = edit
 		self.get_selection()
-		path = str(self.selection_file_name).replace('\\','\\\\')
+		print("refaktor path: ", str(self.selection_file_name))
+		path = str(self.selection_file_name)#.replace('\\','\\\\')
+		print("refaktor path after: ", path)
 
 		details_array = []
 		details_array.append(details)

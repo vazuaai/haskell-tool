@@ -27,7 +27,7 @@ class ServerManager:
 	# Startserver merthod calls a subprocess that run an exe file that contains the server.
 	#
 	def startserver(self):
-		subprocess.call('"C:\\Users\\Zoli\\AppData\\Roaming\\Sublime Text 3\\Packages\\haskell-tool\\ht-daemon.exe"', shell=False)
+		subprocess.call(['C:\\Users\\Zoli\\AppData\\Roaming\\Sublime Text 3\\Packages\\haskell-tool\\ht-daemon.exe', '4123', 'True']) #, shell=False
 
 # static method
 def get_server_manager():
