@@ -30,8 +30,8 @@ class HaskellToolsPlugin(sublime_plugin.EventListener):
 
     def on_close(self, view):
         print(view.file_name(), "is no more")
-        if ClientManager._instance.connected is True:
-            ClientManager._instance.reload(view.file_name(), "removed")
+        # if ClientManager._instance.connected is True:
+        #     ClientManager._instance.reload(view.file_name(), "removed")
 
     def on_clone(self, view):
         print(view.file_name(), "just got cloned")

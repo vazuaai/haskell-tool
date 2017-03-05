@@ -25,8 +25,10 @@ class ClientManager:
 	#
 	def __init__(self):
 
-		print("I'm in init")
 		if ClientManager._instance is None:
+
+			# server
+			self.server_path = ""
 
 			# client
 			ClientManager._instance = self
@@ -45,7 +47,6 @@ class ClientManager:
 			# selection
 			self.selection = ""
 			self.selection_file_name = ""
-
 	
 	# Definition:
 	# It's defined the host, the port and starts a connection thread.
@@ -57,6 +58,7 @@ class ClientManager:
 		thread = Thread(target = self.connect, args=())
 		thread.start()
 		print("Connect thread started.")
+		
 
 	# Definition:
 	# 
@@ -76,6 +78,9 @@ class ClientManager:
 		thread = Thread(target = self.receive, args=())
 		thread.start()
 		print("Receive thread started.")
+
+		# Config file initialization
+		self.init_config_file()
 
 	# Definition:
 	# It's send a message to the server, if the lock released.
@@ -99,9 +104,11 @@ class ClientManager:
 
 		while True:
 			data = self.socket.recv(1024)		
-			if data == b'\n':
-				continue
+			if data == b'\n' or data == b'':
+				print("in continue, data: ", data)
+				continue 
 			else:
+				print("in else, data: ", data)
 				incoming += data
 				
 			list_of_data = incoming.splitlines()
@@ -164,6 +171,27 @@ class ClientManager:
 		thread = Thread(target = self.keep_alive_server, args=(server))
 		thread.start()
 
+
+	def push_to_config_file(self, data):
+		
+		with open(self.config_file_path, 'a+') as self.config_file:
+			self.config_file.write(data + '\n')
+
+		self.config_file.close()
+
+
+	def init_config_file(self):
+
+		self.config_file_path = "C:\\Users\\Zoli\\AppData\\Roaming\\Sublime Text 3\\Packages\\haskell-tool\\client\\config"
+		with open(self.config_file_path, 'r+') as self.config_file:
+			for line in self.config_file:
+				print("LINE: ",line)
+				self.send_message(line.encode('utf-8'))
+
+		self.config_file.close()
+
+
+
 	# Definition:
 	# If the user add a new package to the project or remove one from it
 	# the tool cathes these post events. They handled in HaskellToolPlugin.py, 
@@ -181,7 +209,7 @@ class ClientManager:
 			i.replace('\\','\\\\')
 			print("Path: ", i)
 		print("Path: ", paths)
-		#paths.replace('\\','\\\\')
+		
 		if(command == "toggle"):	
 			data['tag'] = 'AddPackages'
 			data['addedPathes'] = paths
@@ -196,6 +224,7 @@ class ClientManager:
 		str_message = json.dumps(data)
 		byte_message = str.encode(str_message)
 		self.send_message(byte_message)
+		self.push_to_config_file(str_message)
 
 	# Definition:
 	# 

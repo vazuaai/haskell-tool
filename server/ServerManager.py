@@ -18,16 +18,20 @@ class ServerManager:
 	# Definition:
 	# This methods task is to create and start a thread with startserver() method.
 	#
-	def run(self):		
+	def run(self,path):	
+		self.server_path = path	
 		thread = Thread(target = self.startserver, args=())
 		thread.start()
 		print("Server thread started.")
-
+		
 	# Definition:
 	# Startserver merthod calls a subprocess that run an exe file that contains the server.
 	#
 	def startserver(self):
+		#get_client_manager().server_path
 		subprocess.call(['C:\\Users\\Zoli\\AppData\\Roaming\\Sublime Text 3\\Packages\\haskell-tool\\ht-daemon.exe', '4123', 'True']) #, shell=False
+		#subprocess.call([self.server_path, '4123', 'True']) #, shell=False
+
 
 # static method
 def get_server_manager():
