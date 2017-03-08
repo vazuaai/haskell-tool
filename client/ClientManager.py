@@ -28,7 +28,7 @@ class ClientManager:
 		if ClientManager._instance is None:
 
 			# server
-			self.server_path = ""
+			self.server_path = "C:\\Users\\Zoli\\AppData\\Roaming\\Sublime Text 3\\Packages\\haskell-tool\\ht-daemon.exe"
 
 			# client
 			ClientManager._instance = self
@@ -47,6 +47,10 @@ class ClientManager:
 			# selection
 			self.selection = ""
 			self.selection_file_name = ""
+
+			#config
+			self.config_packages = []
+			self.config_file_path = "C:\\Users\\Zoli\\AppData\\Roaming\\Sublime Text 3\\Packages\\haskell-tool\\client\\config"
 	
 	# Definition:
 	# It's defined the host, the port and starts a connection thread.
@@ -88,12 +92,18 @@ class ClientManager:
 	# @msg the message that we want to send
 	#
 	def send_message(self, msg):
+
 		with self.lock:
-			print("")
-			print("SENDED MESSAGE: ", msg)
-			print("")
-			self.socket.send(msg)
-			self.is_alive_counter += 1
+
+			if msg != b'\n' and msg != b'':
+				print("")
+				print("SENDED MESSAGE: ", msg)
+				print("")
+				self.socket.send(msg)
+				self.is_alive_counter += 1
+			else: 
+				print("This message is a ", msg, " we can't send that!")
+
 
 	# Definition:
 	# This method is responsible for catch response messages from the server.
@@ -103,16 +113,15 @@ class ClientManager:
 		list_of_data = []
 
 		while True:
-			data = self.socket.recv(1024)		
-			if data == b'\n' or data == b'':
-				print("in continue, data: ", data)
+
+			data = self.socket.recv(1024)	
+			if data == b'\n' and data == b'':
+				print("This message is a ", data, " we can't send that!")
 				continue 
 			else:
-				print("in else, data: ", data)
 				incoming += data
 				
 			list_of_data = incoming.splitlines()
-			incoming = b''
 
 			for i in list_of_data:
 				print("")
@@ -172,25 +181,111 @@ class ClientManager:
 		thread.start()
 
 
-	def push_to_config_file(self, data):
-		
-		with open(self.config_file_path, 'a+') as self.config_file:
-			self.config_file.write(data + '\n')
+	# with this method we can change the servers path in config
+	# TODO: its only changes, but what we could do when the config file doesent contain the path
+	#	we should create a flag like: [SERVER_PATH]:
+	def set_servers_path_in_config_file(self, path):
 
-		self.config_file.close()
+		data = {}
+		data['key'] = 'ServerPath'
+		data['value'] = path
+		config_data = json.dumps(data)
+
+		# delete first row
+		with open(self.config_file_path, 'r') as fin:
+			lines = fin.read().splitlines(True)
+		fin.close()
+
+		with open(self.config_file_path, 'w') as fout:
+			fout.writelines(lines[1:])
+		fout.close()
+
+		# append new server path
+		with open(self.config_file_path, 'r') as config_file_read:
+			text = config_file_read.read()
+		config_file_read.close()
+
+		with open(self.config_file_path, 'w') as config_file_write:
+			config_file_write.write(config_data)
+			config_file_write.write('\n')
+			config_file_write.write(text)
+		config_file_write.close()
+
+		# save the current server path
+		self.server_path = data
+
+	def init_servers_path_from_config_file(self):
+
+		with open(self.config_file_path, 'r') as fin:
+			lines = fin.read().splitlines(True)
+		fin.close()
+
+		for line in lines:
+			decoded_json = json.loads(line)
+			if(decoded_json['key'] == 'ServerPath'):
+				self.server_path = decoded_json['value']
+
+		print(self.server_path)
+		
+
+	def push_toggled_packages_to_config_file(self, package):
+
+		isPackageExists = False
+
+		data = {}
+		data['key'] = 'ToggledPackage'
+		data['value'] = package
+		config_data = json.dumps(data)
+
+		with open(self.config_file_path, 'r') as fin:
+			lines = fin.read().splitlines(True)
+		fin.close()
+
+		for line in lines:
+			print("OLVASOM A SOROKAT")
+			decoded_json = json.loads(line)
+			print("DECODEDJSON:",decoded_json)
+			if(decoded_json['key'] == 'ToggledPackage'):
+				print("ToggledPackage")
+				print(decoded_json['value'], ":::", package)
+				if(decoded_json['value'] == package):
+					isPackageExists = True
+					print(isPackageExists)
+					break
+					
+
+
+		if isPackageExists == False:
+			with open(self.config_file_path, 'a+') as config_file:
+				self.config_packages.append(config_data)
+				config_file.write(config_data)
+				config_file.write('\n')
+
+			config_file.close()
 
 
 	def init_config_file(self):
 
-		self.config_file_path = "C:\\Users\\Zoli\\AppData\\Roaming\\Sublime Text 3\\Packages\\haskell-tool\\client\\config"
-		with open(self.config_file_path, 'r+') as self.config_file:
-			for line in self.config_file:
-				print("LINE: ",line)
-				self.send_message(line.encode('utf-8'))
+		try:
+			self.init_servers_path_from_config_file()
+		except:
+			print("Unexpected error while servers path initialization!")
+			raise
+			# with open(self.config_file_path, 'r+') as config_file:
+		 # 	for line in config_file:	
+		 # 		self.config_packages.append(line)
+		 # 		print("LINE: ",line)
+		 # 		self.send_message(line.encode('utf-8'))
+		
 
-		self.config_file.close()
 
+		# with open(self.config_file_path, 'r+') as config_file:
+		# 	for line in config_file:	
+		# 		self.config_packages.append(line)
+		# 		print("LINE: ",line)
+		# 		self.send_message(line.encode('utf-8'))
 
+		# config_file.close()
 
 	# Definition:
 	# If the user add a new package to the project or remove one from it
@@ -224,7 +319,7 @@ class ClientManager:
 		str_message = json.dumps(data)
 		byte_message = str.encode(str_message)
 		self.send_message(byte_message)
-		self.push_to_config_file(str_message)
+		self.push_toggled_packages_to_config_file(paths)
 
 	# Definition:
 	# 

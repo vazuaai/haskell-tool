@@ -8,6 +8,9 @@ from threading import Thread
 import subprocess
 import time
 
+from ..client.ClientManager import ClientManager
+from ..client.ClientManager import get_client_manager
+
 # Definition: 
 # This class represents the server, that communicate with client.
 #
@@ -28,8 +31,9 @@ class ServerManager:
 	# Startserver merthod calls a subprocess that run an exe file that contains the server.
 	#
 	def startserver(self):
-		#get_client_manager().server_path
-		subprocess.call(['C:\\Users\\Zoli\\AppData\\Roaming\\Sublime Text 3\\Packages\\haskell-tool\\ht-daemon.exe', '4123', 'True']) #, shell=False
+		server_path = get_client_manager().server_path
+		print("Serverpath: ", server_path)
+		subprocess.call([server_path, '4123', 'True']) #, shell=False
 		#subprocess.call([self.server_path, '4123', 'True']) #, shell=False
 
 

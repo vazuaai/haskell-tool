@@ -73,18 +73,26 @@ TODO:
 
 	- az editor mentse el, hogy mely packageket toggleztuk eddig
 		- file-ba írással, utánajárni van-e valami konvenció hogy
-		a plugin hogyan mentik ezket 
+		a plugin hogyan mentik ezket  
 
 	- az exe (server) helye egy beállítási lehetőség legyen
-		- haskell tools-on belül legyen egy settings és ott lehessen megdni az exe-t
+		- haskell tools-on belül legyen egy settings és ott lehessen megdni az exe-t [KÉSZ]
 
 	- json dump segítségével config file-t készíteni
 		- indulsákor ezt filet beolvassuk,
-		- ha valami változás van akkor ebbe mentsunk
+		- ha valami változás van akkor ebbe mentsunk 
 
 TODO: - configot okosítani
 	- ha az elküldott package még nincs benne a configban akkor rakja bele,
 	- ha benne van akkor nem
 	- ha töröljük töröljük a cnfigból is
-	- server path
+	- server path [KÉSZ]
 	- https://github.com/haskell-tools/haskell-tools#running-the-cli [ ]
+
+TODO:
+	- ha a server, config utvonal nem elérhető akkor azt kérjük be!
+	-MEGJEGYZÉS: server path logika:
+
+TODO:
+	- a config file maga egy json legyen, ne jsonok sora
+	"packeges:"[], "serverpath"

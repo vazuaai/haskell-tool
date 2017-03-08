@@ -17,8 +17,11 @@ from .client.ClientManager import get_client_manager
 class SetServerPathCommand(sublime_plugin.TextCommand):
 
 	def run(self,edit):
-		self.edit = edit
-		sublime.active_window().show_input_panel("Please type here the server's path: ", "C:\\Users\\Zoli\\AppData\\Roaming\\Sublime Text 3\\Packages\\haskell-tool\\ht-daemon.exe", self.on_done, None, None)	
+		self.edit = edit 
+		#sublime.active_window().show_input_panel("Please type here the server's path: ", "C:\\Users\\Zoli\\AppData\\Roaming\\Sublime Text 3\\Packages\\haskell-tool\\ht-daemon.exe", self.on_done, None, None)	
+		sublime.active_window().show_input_panel("Please type here the server's path: ", "" ,self.on_done, None, None)	
 
+		
 	def on_done(self, text):
 		get_client_manager().server_path = text
+		get_client_manager().set_servers_path_in_config_file(text)

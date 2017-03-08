@@ -4,6 +4,22 @@
 		"selected_items":
 		[
 			[
+				"dec",
+				"decoded_json"
+			],
+			[
+				"is",
+				"isPackageExists"
+			],
+			[
+				"conf",
+				"config_file_path"
+			],
+			[
+				"config_",
+				"config_packeges"
+			],
+			[
 				"get",
 				"get_client_manager"
 			],
@@ -180,10 +196,6 @@
 				"websocket\tmodule"
 			],
 			[
-				"is",
-				"isDirty"
-			],
-			[
 				"i",
 				"insert"
 			],
@@ -199,16 +211,24 @@
 			"file": "client/ClientManager.py",
 			"settings":
 			{
-				"buffer_size": 8123,
+				"buffer_size": 10744,
 				"encoding": "UTF-8",
 				"line_ending": "Windows"
 			}
 		},
 		{
-			"file": "todo",
+			"file": "ToggleCommand.py",
 			"settings":
 			{
-				"buffer_size": 3297,
+				"buffer_size": 328,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "server/ServerManager.py",
+			"settings":
+			{
+				"buffer_size": 1135,
 				"encoding": "UTF-8",
 				"line_ending": "Windows"
 			}
@@ -217,7 +237,24 @@
 			"file": "client/config",
 			"settings":
 			{
-				"buffer_size": 211,
+				"buffer_size": 229,
+				"encoding": "UTF-8",
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "SetServerPathCommand.py",
+			"settings":
+			{
+				"buffer_size": 829,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "todo",
+			"settings":
+			{
+				"buffer_size": 3509,
 				"encoding": "UTF-8",
 				"line_ending": "Windows"
 			}
@@ -279,7 +316,7 @@
 	},
 	"console":
 	{
-		"height": 230.0,
+		"height": 160.0,
 		"history":
 		[
 			"asd",
@@ -344,13 +381,13 @@
 	],
 	"file_history":
 	[
+		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/client/config",
 		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/HaskellToolsPlugin.py",
 		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/ServerControllerCommand.py",
 		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/SetServerPathCommand.py",
 		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/server/ServerManager.py",
 		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/Main.sublime-menu",
 		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/todo",
-		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/client/config",
 		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/Side Bar.sublime-menu",
 		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/RenameCommand.py",
 		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/StopClientCommand.py",
@@ -497,7 +534,7 @@
 	"groups":
 	[
 		{
-			"selected": 0,
+			"selected": 5,
 			"sheets":
 			[
 				{
@@ -506,15 +543,15 @@
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 8123,
+						"buffer_size": 10744,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								2251,
-								2251
+								6192,
+								6192
 							]
 						],
 						"settings":
@@ -523,56 +560,84 @@
 							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
-						"translation.y": 2040.0,
+						"translation.y": 4740.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 0,
+					"stack_index": 1,
 					"type": "text"
 				},
 				{
 					"buffer": 1,
-					"file": "todo",
+					"file": "ToggleCommand.py",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 3297,
+						"buffer_size": 328,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								3148,
-								3148
+								287,
+								287
 							]
 						],
 						"settings":
 						{
-							"syntax": "Packages/Text/Plain text.tmLanguage",
-							"translate_tabs_to_spaces": false
+							"syntax": "Packages/Python/Python.sublime-syntax"
 						},
 						"translation.x": 0.0,
-						"translation.y": 960.0,
+						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 2,
+					"stack_index": 5,
 					"type": "text"
 				},
 				{
 					"buffer": 2,
-					"file": "client/config",
+					"file": "server/ServerManager.py",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 211,
+						"buffer_size": 1135,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								210,
-								210
+								993,
+								993
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 391.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 3,
+					"type": "text"
+				},
+				{
+					"buffer": 3,
+					"file": "client/config",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 229,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								229,
+								229
 							]
 						],
 						"settings":
@@ -583,7 +648,64 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 1,
+					"stack_index": 2,
+					"type": "text"
+				},
+				{
+					"buffer": 4,
+					"file": "SetServerPathCommand.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 829,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								829,
+								829
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.sublime-syntax"
+						},
+						"translation.x": 33.0,
+						"translation.y": 67.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 4,
+					"type": "text"
+				},
+				{
+					"buffer": 5,
+					"file": "todo",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 3509,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								3482,
+								3482
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Text/Plain text.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 1580.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
 					"type": "text"
 				}
 			]
@@ -702,7 +824,7 @@
 	"show_open_files": true,
 	"show_tabs": true,
 	"side_bar_visible": true,
-	"side_bar_width": 291.0,
+	"side_bar_width": 250.0,
 	"status_bar_visible": true,
 	"template_settings":
 	{
