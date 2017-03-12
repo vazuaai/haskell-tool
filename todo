@@ -96,3 +96,4 @@ TODO:
 TODO:
 	- a config file maga egy json legyen, ne jsonok sora
 	"packeges:"[], "serverpath"
+	- ha nem indítom el a szervert és ugy nyomok toggle/untoggle-t akkor lefagy !!!

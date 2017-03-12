@@ -32,7 +32,6 @@ class ServerManager:
 	#
 	def startserver(self):
 		server_path = get_client_manager().server_path
-		print("Serverpath: ", server_path)
 		subprocess.call([server_path, '4123', 'True']) #, shell=False
 		#subprocess.call([self.server_path, '4123', 'True']) #, shell=False
 

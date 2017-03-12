@@ -28,7 +28,8 @@ class ClientManager:
 		if ClientManager._instance is None:
 
 			# server
-			self.server_path = "C:\\Users\\Zoli\\AppData\\Roaming\\Sublime Text 3\\Packages\\haskell-tool\\ht-daemon.exe"
+			self.server_path = ""
+
 
 			# client
 			ClientManager._instance = self
@@ -49,6 +50,7 @@ class ClientManager:
 			self.selection_file_name = ""
 
 			#config
+			self.config = {}
 			self.config_packages = []
 			self.config_file_path = "C:\\Users\\Zoli\\AppData\\Roaming\\Sublime Text 3\\Packages\\haskell-tool\\client\\config"
 	
@@ -83,8 +85,7 @@ class ClientManager:
 		thread.start()
 		print("Receive thread started.")
 
-		# Config file initialization
-		self.init_config_file()
+		
 
 	# Definition:
 	# It's send a message to the server, if the lock released.
@@ -148,6 +149,7 @@ class ClientManager:
 		# itt már rögtön elküldjük a szervernek a megnyitott mappákat?
 		self.sent_packages = sublime.active_window().folders()
 		self.edit = edit
+		self.init_config_file()
 
 	# Definition:
 	# With this method the client notifies the server that it's still up and running.
@@ -169,8 +171,8 @@ class ClientManager:
 
 			if self.is_alive_counter > 10:
 				server.run()
-				print("THE SERVER STARTED")
 				self.is_alive_counter = 0
+
 			else: 
 				time.sleep(1)
 				self.keep_alive()
@@ -184,108 +186,68 @@ class ClientManager:
 	# with this method we can change the servers path in config
 	# TODO: its only changes, but what we could do when the config file doesent contain the path
 	#	we should create a flag like: [SERVER_PATH]:
-	def set_servers_path_in_config_file(self, path):
+	def set_servers_path(self, path):
+		
+		self.server_path = path
+		self.config['server_path'] = self.server_path
+		self.set_config_file()
 
-		data = {}
-		data['key'] = 'ServerPath'
-		data['value'] = path
-		config_data = json.dumps(data)
 
-		# delete first row
-		with open(self.config_file_path, 'r') as fin:
-			lines = fin.read().splitlines(True)
-		fin.close()
+	def set_toggled_packages(self, package):
 
-		with open(self.config_file_path, 'w') as fout:
-			fout.writelines(lines[1:])
-		fout.close()
+		self.config_packages.append(package)
+		self.config['packages'] = self.config_packages
+		self.set_config_file()
 
-		# append new server path
-		with open(self.config_file_path, 'r') as config_file_read:
-			text = config_file_read.read()
-		config_file_read.close()
+	def remove_untoggled_packages(self, package):
 
-		with open(self.config_file_path, 'w') as config_file_write:
-			config_file_write.write(config_data)
-			config_file_write.write('\n')
-			config_file_write.write(text)
-		config_file_write.close()
+		self.config_packages.remove(package)
+		self.config['packages'] = self.config_packages
+		self.set_config_file()
 
-		# save the current server path
-		self.server_path = data
+	def set_config_file(self):
+		
+		open(self.config_file_path,'w').close
+		self.config['server_path'] = self.server_path
+		self.config['packages'] = self.config_packages
+		config_str = json.dumps(self.config)
+
+		with open(self.config_file_path, 'w') as config_file:
+			config_file.write(config_str)
+		config_file.close()
 
 	def init_servers_path_from_config_file(self):
 
-		with open(self.config_file_path, 'r') as fin:
-			lines = fin.read().splitlines(True)
-		fin.close()
+		config_file = open(self.config_file_path, 'r')
+		config_str = config_file.read()
+		config_json = json.loads(config_str)
+		value = config_json.get("server_path")
 
-		for line in lines:
-			decoded_json = json.loads(line)
-			if(decoded_json['key'] == 'ServerPath'):
-				self.server_path = decoded_json['value']
+		if( value != None ):
+			self.server_path = value
 
-		print(self.server_path)
-		
+		config_file.close()
 
-	def push_toggled_packages_to_config_file(self, package):
+	def init_packages_from_config_file(self):
+		config_file = open(self.config_file_path, 'r')
+		config_str = config_file.read()
+		config_json = json.loads(config_str)
+		value = config_json.get("packages")
 
-		isPackageExists = False
-
-		data = {}
-		data['key'] = 'ToggledPackage'
-		data['value'] = package
-		config_data = json.dumps(data)
-
-		with open(self.config_file_path, 'r') as fin:
-			lines = fin.read().splitlines(True)
-		fin.close()
-
-		for line in lines:
-			print("OLVASOM A SOROKAT")
-			decoded_json = json.loads(line)
-			print("DECODEDJSON:",decoded_json)
-			if(decoded_json['key'] == 'ToggledPackage'):
-				print("ToggledPackage")
-				print(decoded_json['value'], ":::", package)
-				if(decoded_json['value'] == package):
-					isPackageExists = True
-					print(isPackageExists)
-					break
-					
-
-
-		if isPackageExists == False:
-			with open(self.config_file_path, 'a+') as config_file:
-				self.config_packages.append(config_data)
-				config_file.write(config_data)
-				config_file.write('\n')
-
-			config_file.close()
-
+		if( value != None ):
+			self.config_packages = value
+			
+		config_file.close()
 
 	def init_config_file(self):
 
 		try:
 			self.init_servers_path_from_config_file()
+			self.init_packages_from_config_file()
+
 		except:
 			print("Unexpected error while servers path initialization!")
 			raise
-			# with open(self.config_file_path, 'r+') as config_file:
-		 # 	for line in config_file:	
-		 # 		self.config_packages.append(line)
-		 # 		print("LINE: ",line)
-		 # 		self.send_message(line.encode('utf-8'))
-		
-
-
-		# with open(self.config_file_path, 'r+') as config_file:
-		# 	for line in config_file:	
-		# 		self.config_packages.append(line)
-		# 		print("LINE: ",line)
-		# 		self.send_message(line.encode('utf-8'))
-
-		# config_file.close()
 
 	# Definition:
 	# If the user add a new package to the project or remove one from it
@@ -302,25 +264,22 @@ class ClientManager:
 		data = {}
 		for i in paths:
 			i.replace('\\','\\\\')
-			print("Path: ", i)
-		print("Path: ", paths)
 		
 		if(command == "toggle"):	
 			data['tag'] = 'AddPackages'
 			data['addedPathes'] = paths
-			print("ADDEDPATH: ", paths)
-			
-		elif (command == "remove_folder"):
+			self.set_toggled_packages(paths)
+
+		elif (command == "untoggle"):
 			data['tag'] = 'RemovePackages'
 			data['removedPathes'] = paths
-			print("REMOVEDPATH: ", paths)
+			self.remove_untoggled_packages(paths)
 		
-
 		str_message = json.dumps(data)
 		byte_message = str.encode(str_message)
 		self.send_message(byte_message)
-		self.push_toggled_packages_to_config_file(paths)
 
+		
 	# Definition:
 	# 
 	def get_selection(self):
@@ -337,16 +296,12 @@ class ClientManager:
 
 		self.selection = str(row_begin) + ":" + str(col_begin) + "-" + str(row_end) + ":" + str(col_end)
 		self.selection_file_name = view.file_name()
-		print("Selected range: ", self.selection)
 
 	def perform_refactoring(self, edit, refactoring_type, details):
 
 		self.edit = edit
 		self.get_selection()
-		print("refaktor path: ", str(self.selection_file_name))
-		path = str(self.selection_file_name)#.replace('\\','\\\\')
-		print("refaktor path after: ", path)
-
+		path = str(self.selection_file_name)
 		details_array = []
 		details_array.append(details)
 
