@@ -14,13 +14,13 @@ import time
 from .client.ClientManager import ClientManager
 from .client.ClientManager import get_client_manager
 
-class SetServerPathCommand(sublime_plugin.WindowCommand):
+class OrganizeImportsCommand(sublime_plugin.TextCommand):
 
-	def run(self):
-		#self.edit = edit 
-		sublime.active_window().show_input_panel("Please type here the server's path: ", "" ,self.on_done, None, None)	
-
+	def run(self,edit):
+		print("OrganizeImports")
+		# self.edit = edit
+		# sublime.active_window().show_input_panel("Type here: ", "", self.on_done, None, None)
 		
+
 	def on_done(self, text):
-		get_client_manager().server_path = text
-		get_client_manager().set_servers_path(text)
+		get_client_manager().perform_refactoring(self.edit, "OrganizeImports", text)

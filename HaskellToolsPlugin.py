@@ -47,3 +47,5 @@ class HaskellToolsPlugin(sublime_plugin.EventListener):
 
     def on_view_command(self, view, command_name, args):
         print(command_name)
+
+    def on_click()

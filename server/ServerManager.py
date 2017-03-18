@@ -10,6 +10,7 @@ import time
 
 from ..client.ClientManager import ClientManager
 from ..client.ClientManager import get_client_manager
+from ..SetServerPathCommand import SetServerPathCommand
 
 # Definition: 
 # This class represents the server, that communicate with client.
@@ -31,11 +32,14 @@ class ServerManager:
 	# Startserver merthod calls a subprocess that run an exe file that contains the server.
 	#
 	def startserver(self):
-		server_path = get_client_manager().server_path
-		subprocess.call([server_path, '4123', 'True']) #, shell=False
-		#subprocess.call([self.server_path, '4123', 'True']) #, shell=False
-
-
+		try:
+			server_path = get_client_manager().server_path
+			subprocess.call([server_path, '4123', 'True']) #, shell=False
+			#subprocess.call([self.server_path, '4123', 'True']) #, shell=False
+		except OSError:
+			sublime.active_window().run_command("set_server_path")
+			print("Oooops!")
+		
 # static method
 def get_server_manager():
 	

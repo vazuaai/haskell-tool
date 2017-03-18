@@ -73,14 +73,14 @@ TODO:
 
 	- az editor mentse el, hogy mely packageket toggleztuk eddig
 		- file-ba írással, utánajárni van-e valami konvenció hogy
-		a plugin hogyan mentik ezket  
+		a plugin hogyan mentik ezket  [KÉSZ]
 
 	- az exe (server) helye egy beállítási lehetőség legyen
 		- haskell tools-on belül legyen egy settings és ott lehessen megdni az exe-t [KÉSZ]
 
 	- json dump segítségével config file-t készíteni
 		- indulsákor ezt filet beolvassuk,
-		- ha valami változás van akkor ebbe mentsunk 
+		- ha valami változás van akkor ebbe mentsunk  [KÉSZ]
 
 TODO: - configot okosítani
 	- ha az elküldott package még nincs benne a configban akkor rakja bele,
@@ -88,12 +88,30 @@ TODO: - configot okosítani
 	- ha töröljük töröljük a cnfigból is
 	- server path [KÉSZ]
 	- https://github.com/haskell-tools/haskell-tools#running-the-cli [ ]
+	- https://github.com/haskell-tools/haskell-tools/blob/master/documentation/development/haskell-tools-refactoring-protocol.md
 
 TODO:
 	- ha a server, config utvonal nem elérhető akkor azt kérjük be!
-	-MEGJEGYZÉS: server path logika:
+	-MEGJEGYZÉS: server path logika: 
 
 TODO:
 	- a config file maga egy json legyen, ne jsonok sora
-	"packeges:"[], "serverpath"
-	- ha nem indítom el a szervert és ugy nyomok toggle/untoggle-t akkor lefagy !!!
+	"packeges:"[], "serverpath" [KÉSZ]
+
+TODO:
+	- csak package-ket lehet TOGGLE-ni [ ]
+		- file-okat nem!!!
+		
+	- a refaktorálások paraméterei lehetnek:
+		- range, new-name, semmi
+		- ha semmi akkor semmit nem kell küldeni csak kiadni a parancsot
+
+	- kiíratás alulra status barra [ ]
+		- alapból disconnected from server
+		- amikor foldert adok a session-hoz
+			- akkor kiírja egyenként a modulokat amiket betölt
+			- protocolban: LoadingModules, azokat tartalmazza amiket majd be fog tölteni
+			- LoadedModules amiket épp betöltött
+ 
+	- kell egy ellenőrzés a toggle előtt hogy a szerver elindult-e [ ]
+		- ha ez nincs lefagy

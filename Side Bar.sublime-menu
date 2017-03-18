@@ -1,8 +1,9 @@
 [
-    { "caption": "-" },
+    { "caption": "-"},
     {
         "caption": "Toggle In Haskell Tool",
         "command": "toggle",
+        "id": "side-bar-new-directory",
         "args": {
             "paths": []
         }
@@ -10,6 +11,7 @@
     {
         "caption": "Untoggle from Haskell Tool",
         "command": "untoggle",
+        "id": "side-bar-new-directory",
         "args": {
             "paths": []
         }

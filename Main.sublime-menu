@@ -10,7 +10,7 @@
             "children": 
                 [
                     { "caption": "-", "id": "end"},
-                    { "caption": "Start/Stop Haskell Tool", "command": "server_controller", "id": "end"},
+                    { "caption": "Start/Stop Haskell Tool", "command": "server_controller", "id": "end", "checkbox": "False"},
                     { "caption": "Check Server", "command": "keep_alive", "id": "end"},   
                     { "caption": "Stop Client", "command": "stop_client", "id": "end"},
                     { 
@@ -19,7 +19,13 @@
                     "id": "end", 
                     "children":
                         [
-                            { "caption": "Rename", "command": "rename", "id": "end"}
+                            { "caption": "Rename", "command": "rename", "id": "end"},
+                            { "caption": "Extract Binding", "command": "extract_binding", "id": "end"},
+                            { "caption": "Inline Binding", "command": "inline_binding", "id": "end"},
+                            { "caption": "Generate Type Signature", "command": "generate_type_signature", "id": "end"},
+                            { "caption": "Organize Imports", "command": "organize_imports", "id": "end"},
+                            { "caption": "Generate Exports", "command": "generate_exports", "id": "end"},
+                            { "caption": "Float Out", "command": "float_out", "id": "end"}
                         ]
                     }, 
                     { "caption": "-"},
@@ -35,26 +41,4 @@
             }
         ]
     },
-
-    {
-        "caption": "Test Menu",
-        "id": "testmenu",
-        "children":
-        [
-            { "caption": "Say Hello World!", "command": "text" },
-            { "caption": "Start Server", "command": "start_server" },
-            { "caption": "Start Client", "command": "start_client" },
-            { "caption": "Open File By Name", "command": "commands-open_file_by_name" },
-            { "caption": "Close File By Name", "command": "close_file" },  
-            { "caption": "Folders", "command": "folders" },
-            { "caption": "Output Panel", "command": "output_panel" },
-            { "caption": "Is Modified", "command": "is_modified" },
-            { "caption": "Is Dirty", "command": "is_dirty" },
-            { "caption": "Refresh", "command": "refresh" },
-        ]
-
-    }
-
-   
-
 ]
