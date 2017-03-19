@@ -17,9 +17,8 @@ from .client.ClientManager import get_client_manager
 class ExtractBindingCommand(sublime_plugin.TextCommand):
 
 	def run(self,edit):
-		print("ExtractBindingCommand")
-		# self.edit = edit
-		# sublime.active_window().show_input_panel("Type here: ", "", self.on_done, None, None)
+		self.edit = edit
+		sublime.active_window().show_input_panel("Type here: ", "", self.on_done, None, None)
 		
 
 	def on_done(self, text):

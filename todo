@@ -99,9 +99,10 @@ TODO:
 	"packeges:"[], "serverpath" [KÉSZ]
 
 TODO:
-	- csak package-ket lehet TOGGLE-ni [ ]
+	- csak package-ket lehet TOGGLE-ni [ minden filet elküld ami egy folderben van]
 		- file-okat nem!!!
 		
+	[KÉSZ]
 	- a refaktorálások paraméterei lehetnek:
 		- range, new-name, semmi
 		- ha semmi akkor semmit nem kell küldeni csak kiadni a parancsot
@@ -115,3 +116,14 @@ TODO:
  
 	- kell egy ellenőrzés a toggle előtt hogy a szerver elindult-e [ ]
 		- ha ez nincs lefagy
+
+	- a keep_alive_server_runner -t mire használjuk?
+	
+MEGJEGYZÉSEK:
+	- furcsaságokat produkál a server válaszainál
+		- válaszüzenet egyáltalán nem érkezik
+		- netcattel kipróbáltam
+		- egyedül a stop üzenet működik
+		- ha togglet nyomok kilép a szerver
+
+

@@ -5,6 +5,7 @@ import sublime_plugin
 import time 
 
 from .client.ClientManager import ClientManager
+from .client.ClientManager import get_client_manager
 
 class HaskellToolsPlugin(sublime_plugin.EventListener):
 
@@ -27,6 +28,12 @@ class HaskellToolsPlugin(sublime_plugin.EventListener):
 
     def on_activated(self, view):
         print(view.file_name(), "is now the active view")
+        print(get_client_manager().is_server_alive)
+        if(get_client_manager().is_server_alive == True):
+            view.set_status('serverStatus', "Connected to server " )
+        else:
+            view.set_status('serverStatus', "Disconnected from server " )
+
 
     def on_close(self, view):
         print(view.file_name(), "is no more")
@@ -47,5 +54,3 @@ class HaskellToolsPlugin(sublime_plugin.EventListener):
 
     def on_view_command(self, view, command_name, args):
         print(command_name)
-
-    def on_click()

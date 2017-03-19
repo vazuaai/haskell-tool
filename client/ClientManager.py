@@ -29,7 +29,7 @@ class ClientManager:
 
 			# server
 			self.server_path = ""
-
+			self.is_server_alive = False
 
 			# client
 			ClientManager._instance = self
@@ -53,7 +53,7 @@ class ClientManager:
 			self.config = {}
 			self.config_packages = []
 			self.config_file_path = "C:\\Users\\Zoli\\AppData\\Roaming\\Sublime Text 3\\Packages\\haskell-tool\\client\\config"
-	
+
 	# Definition:
 	# It's defined the host, the port and starts a connection thread.
 	# 
@@ -84,6 +84,7 @@ class ClientManager:
 		thread = Thread(target = self.receive, args=())
 		thread.start()
 		print("Receive thread started.")
+		self.is_server_alive = True
 
 		
 
@@ -116,6 +117,7 @@ class ClientManager:
 		while True:
 
 			data = self.socket.recv(1024)	
+			print("RAW DATA FROM SERVER: ", data)
 			if data == b'\n' and data == b'':
 				print("This message is a ", data, " we can't send that!")
 				continue 
@@ -150,6 +152,7 @@ class ClientManager:
 		self.sent_packages = sublime.active_window().folders()
 		self.edit = edit
 		self.init_config_file()
+		
 
 	# Definition:
 	# With this method the client notifies the server that it's still up and running.
@@ -172,10 +175,12 @@ class ClientManager:
 			if self.is_alive_counter > 10:
 				server.run()
 				self.is_alive_counter = 0
+				self.is_server_alive = True
 
 			else: 
 				time.sleep(1)
 				self.keep_alive()
+				self.is_server_alive = False
 
 
 	def keep_alive_server_runner(self, server):
@@ -220,24 +225,32 @@ class ClientManager:
 
 		config_file = open(self.config_file_path, 'r')
 		config_str = config_file.read()
-		config_json = json.loads(config_str)
-		value = config_json.get("server_path")
+		try:
+			config_json = json.loads(config_str)
+			value = config_json.get("server_path")
 
-		if( value != None ):
-			self.server_path = value
+			if( value != None ):
+				self.server_path = value
+		except ValueError:
+			sublime.message_dialog("The the servers path is not given yet! Please give it below.")
+			sublime.active_window().run_command("set_server_path")
+			config_file.close()
 
-		config_file.close()
+		
 
 	def init_packages_from_config_file(self):
 		config_file = open(self.config_file_path, 'r')
 		config_str = config_file.read()
-		config_json = json.loads(config_str)
-		value = config_json.get("packages")
+		try:
+			config_json = json.loads(config_str)
+			value = config_json.get("packages")
 
-		if( value != None ):
-			self.config_packages = value
-			
-		config_file.close()
+			if( value != None ):
+				self.config_packages = value
+		except ValueError:
+			sublime.message_dialog("There isn't any packages to initialize.")
+			config_file.close()
+		
 
 	def init_config_file(self):
 
@@ -260,24 +273,24 @@ class ClientManager:
 	# TODO: ide is kell majd az edit!!!
 	#
 	def refresh_packages(self, paths, command):
+		if(self.is_server_alive == True):
+			data = {}
+			for i in paths:
+				i.replace('\\','\\\\')
+			
+			if(command == "toggle"):	
+				data['tag'] = 'AddPackages'
+				data['addedPathes'] = paths
+				self.set_toggled_packages(paths)
 
-		data = {}
-		for i in paths:
-			i.replace('\\','\\\\')
-		
-		if(command == "toggle"):	
-			data['tag'] = 'AddPackages'
-			data['addedPathes'] = paths
-			self.set_toggled_packages(paths)
-
-		elif (command == "untoggle"):
-			data['tag'] = 'RemovePackages'
-			data['removedPathes'] = paths
-			self.remove_untoggled_packages(paths)
-		
-		str_message = json.dumps(data)
-		byte_message = str.encode(str_message)
-		self.send_message(byte_message)
+			elif (command == "untoggle"):
+				data['tag'] = 'RemovePackages'
+				data['removedPathes'] = paths
+				self.remove_untoggled_packages(paths)
+			
+			str_message = json.dumps(data)
+			byte_message = str.encode(str_message)
+			self.send_message(byte_message)
 
 		
 	# Definition:
@@ -309,7 +322,12 @@ class ClientManager:
 		data['tag'] = 'PerformRefactoring'
 		data['refactoring'] = refactoring_type
 		data['modulePath'] = path
-		data['editorSelection'] = self.selection
+
+		if(refactoring_type == "OrganizeImports" or refactoring_type == "GenerateExports"):
+			data['editorSelection'] = ""
+		else:
+			data['editorSelection'] = self.selection
+			
 		data['details'] = details_array
 		str_message = json.dumps(data)
 

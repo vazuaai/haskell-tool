@@ -160,10 +160,10 @@
 	"buffers":
 	[
 		{
-			"file": "/C/Users/Zoli/Desktop/haskell-tool-guest/A.hs",
+			"file": "/E/Szakdolgozat/Haskell Tool Things/haskell-tool-guest/A.hs",
 			"settings":
 			{
-				"buffer_size": 64,
+				"buffer_size": 24,
 				"encoding": "UTF-8",
 				"line_ending": "Unix"
 			}
@@ -282,10 +282,11 @@
 	},
 	"expanded_folders":
 	[
-		"/C/Users/Zoli/Desktop/haskell-tool-guest"
+		"/E/Szakdolgozat/Haskell Tool Things/haskell-tool-guest"
 	],
 	"file_history":
 	[
+		"/C/Users/Zoli/Desktop/haskell-tool-guest/A.hs",
 		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/RefactoringCommand.py",
 		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/Main.sublime-menu",
 		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/ServerControllerCommand.py",
@@ -427,19 +428,19 @@
 			[
 				{
 					"buffer": 0,
-					"file": "/C/Users/Zoli/Desktop/haskell-tool-guest/A.hs",
+					"file": "/E/Szakdolgozat/Haskell Tool Things/haskell-tool-guest/A.hs",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 64,
+						"buffer_size": 24,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								64,
-								64
+								24,
+								24
 							]
 						],
 						"settings":

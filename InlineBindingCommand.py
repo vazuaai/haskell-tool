@@ -17,10 +17,4 @@ from .client.ClientManager import get_client_manager
 class InlineBindingCommand(sublime_plugin.TextCommand):
 
 	def run(self,edit):
-		print("InlineBindingCommand")
-		# self.edit = edit
-		# sublime.active_window().show_input_panel("Type here: ", "", self.on_done, None, None)
-		
-
-	def on_done(self, text):
-		get_client_manager().perform_refactoring(self.edit, "InlineBindig", text)
+		get_client_manager().perform_refactoring(self.edit, "InlineBindig","")
