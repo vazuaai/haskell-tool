@@ -28,7 +28,6 @@ class HaskellToolsPlugin(sublime_plugin.EventListener):
 
     def on_activated(self, view):
         print(view.file_name(), "is now the active view")
-        print(get_client_manager().is_server_alive)
         if(get_client_manager().is_server_alive == True):
             view.set_status('serverStatus', "Connected to server " )
         else:

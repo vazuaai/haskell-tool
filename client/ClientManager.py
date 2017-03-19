@@ -52,7 +52,8 @@ class ClientManager:
 			#config
 			self.config = {}
 			self.config_packages = []
-			self.config_file_path = "C:\\Users\\Zoli\\AppData\\Roaming\\Sublime Text 3\\Packages\\haskell-tool\\client\\config"
+			self.config_file_path = os.path.dirname(__file__) + "\\config"
+
 
 	# Definition:
 	# It's defined the host, the port and starts a connection thread.
@@ -72,21 +73,66 @@ class ClientManager:
 	# After connection the lock released and the tool can send messages after that.
 	#
 	def connect(self):
+
 		while True:
+
 			try:
 				self.connection = self.socket.connect((self.host, self.port))
 				self.lock.release()
-				self.connected = True
 				break
+
 			except Exception as e:
 				time.sleep(0.1)
 
 		thread = Thread(target = self.receive, args=())
 		thread.start()
+
 		print("Receive thread started.")
+		self.connected = True
 		self.is_server_alive = True
 
-		
+	# Definition:
+	# This method is responsible for catch response messages from the server.
+	def receive(self):
+
+		incoming = b''
+		list_of_data = []
+
+		while True:
+			
+			try:
+				data = self.socket.recv(1024)
+				self.is_server_alive = True
+				print("RAW DATA FROM SERVER: ", data)
+
+				if data == b'\n' and data == b'':
+					print("This message is a ", data, " we can't send that!")
+					continue 
+				else:
+					incoming += data
+					
+				list_of_data = incoming.splitlines()
+
+				for i in list_of_data:
+					print("")
+					print("RECEIVED MESSAGE: ",i)
+					print("")
+					message = json.loads(i.decode("utf-8"))
+					self.is_alive_counter -= 1
+
+					if message.get("tag") == "ErrorMassage":
+						error_msg = "Error received: ", message.get("errorMsg")
+						sublime.error_message(error_msg)
+
+					else :
+						print("Még nem kezeljük ezt a hibát: ", message)
+						msg_dialog = "The received message is: " + str(message)
+						sublime.message_dialog(msg_dialog)
+						
+			except ConnectionResetError:
+				self.is_server_alive = False
+				sublime.error_message("Connection with server closed.")
+				break
 
 	# Definition:
 	# It's send a message to the server, if the lock released.
@@ -103,44 +149,9 @@ class ClientManager:
 				print("")
 				self.socket.send(msg)
 				self.is_alive_counter += 1
+
 			else: 
 				print("This message is a ", msg, " we can't send that!")
-
-
-	# Definition:
-	# This method is responsible for catch response messages from the server.
-	def receive(self):
-
-		incoming = b''
-		list_of_data = []
-
-		while True:
-
-			data = self.socket.recv(1024)	
-			print("RAW DATA FROM SERVER: ", data)
-			if data == b'\n' and data == b'':
-				print("This message is a ", data, " we can't send that!")
-				continue 
-			else:
-				incoming += data
-				
-			list_of_data = incoming.splitlines()
-
-			for i in list_of_data:
-				print("")
-				print("RECEIVED MESSAGE: ",i)
-				print("")
-				message = json.loads(i.decode("utf-8"))
-				self.is_alive_counter -= 1
-
-				if message.get("tag") == "ErrorMassage":
-					error_msg = "Error received: ", message.get("errorMsg")
-					sublime.error_message(error_msg)
-
-				else :
-					print("Még nem kezeljük ezt a hibát: ", message)
-					msg_dialog = "The received message is: " + str(message)
-					sublime.message_dialog(msg_dialog)
 
 
 	# Definition:
@@ -273,6 +284,7 @@ class ClientManager:
 	# TODO: ide is kell majd az edit!!!
 	#
 	def refresh_packages(self, paths, command):
+
 		if(self.is_server_alive == True):
 			data = {}
 			for i in paths:
@@ -365,7 +377,6 @@ class ClientManager:
 	#
 	def reload(self, path, action_tpye):
 
-		path = str(path).replace('\\','\\\\')
 		changed_modules_array = []
 		removed_modules_array = []
 		data = {}
