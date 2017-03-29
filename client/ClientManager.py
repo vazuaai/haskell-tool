@@ -44,6 +44,7 @@ class ClientManager:
 			# packeges
 			self.sent_packages = []
 			self.current_packages = []
+			self.sent_package_paths = ""
 
 			# selection
 			self.selection = ""
@@ -203,8 +204,10 @@ class ClientManager:
 	#	we should create a flag like: [SERVER_PATH]:
 	def set_servers_path(self, path):
 		
-		self.server_path = path
-		self.config['server_path'] = self.server_path
+		for i in package:
+			self.config_packages.append(i)
+		
+		self.config['packages'] = self.config_packages
 		self.set_config_file()
 
 
@@ -285,23 +288,26 @@ class ClientManager:
 	def refresh_packages(self, paths, command):
 
 		if(self.is_server_alive == True):
-			data = {}
-			for i in paths:
-				i.replace('\\','\\\\')
 			
-			if(command == "toggle"):	
+			data = {}
+			is_sendable = False
+			
+			if((command == "toggle") and not(paths in self.config_packages)):
+				is_sendable = True	
 				data['tag'] = 'AddPackages'
 				data['addedPathes'] = paths
-				self.set_toggled_packages(paths)
+				self.sent_package_paths = paths
 
-			elif (command == "untoggle"):
+			elif (command == "untoggle" and (paths in self.config_packages)):
+				is_sendable = True
 				data['tag'] = 'RemovePackages'
 				data['removedPathes'] = paths
 				self.remove_untoggled_packages(paths)
 			
-			str_message = json.dumps(data)
-			byte_message = str.encode(str_message)
-			self.send_message(byte_message)
+			if is_sendable:
+				str_message = json.dumps(data)
+				byte_message = str.encode(str_message)
+				self.send_message(byte_message)
 
 		
 	# Definition:
