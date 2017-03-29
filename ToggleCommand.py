@@ -9,15 +9,10 @@ class ToggleCommand(sublime_plugin.WindowCommand):
 
 	def run(self, paths=[]):
 
-		# több foldert is kaphat a togglecommand
-		self.files = []
+		for item in paths:
 
-		for folder in paths:
-			print("ROOTDIR: ", folder)
-			self.files.append(folder)
-			for subdir, dirs, files in os.walk(folder):
-				for file in files:
-					print("SUBDIRS, FILES: ", os.path.join(subdir, file))
-					self.files.append(os.path.join(os.path.join(subdir, file)))
-					
-		get_client_manager().refresh_packages(self.files, "toggle")
+			if(os.path.isdir(item) != True):
+				sublime.message_dialog("You can toggle only directories!")
+
+			else:
+				get_client_manager().refresh_packages(paths, "toggle")

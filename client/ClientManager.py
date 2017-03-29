@@ -102,22 +102,21 @@ class ClientManager:
 			
 			try:
 				data = self.socket.recv(1024)
-				self.is_server_alive = True
-				print("RAW DATA FROM SERVER: ", data)
+				self.is_server_alive = True		
+				del list_of_data[:]
 
-				if data == b'\n' and data == b'':
+				if data == b'\n' or data == b'':
 					print("This message is a ", data, " we can't send that!")
 					continue 
 				else:
-					incoming += data
-					
-				list_of_data = incoming.splitlines()
-
+					list_of_data.append(data)
+				
 				for i in list_of_data:
-					print("")
+					
 					print("RECEIVED MESSAGE: ",i)
 					print("")
 					message = json.loads(i.decode("utf-8"))
+					msg_dialog = "The received message is: " + str(message)
 					self.is_alive_counter -= 1
 
 					if message.get("tag") == "ErrorMassage":
