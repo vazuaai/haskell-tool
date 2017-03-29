@@ -4,6 +4,10 @@
 		"selected_items":
 		[
 			[
+				"is",
+				"isSendable"
+			],
+			[
 				"sen",
 				"sended_package_paths"
 			],
@@ -18,10 +22,6 @@
 			[
 				"load",
 				"loadedModules"
-			],
-			[
-				"is",
-				"is_sendable"
 			],
 			[
 				"config_",
@@ -259,7 +259,25 @@
 			"file": "client/ClientManager.py",
 			"settings":
 			{
-				"buffer_size": 10274,
+				"buffer_size": 10439,
+				"encoding": "UTF-8",
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "ToggleCommand.py",
+			"settings":
+			{
+				"buffer_size": 508,
+				"encoding": "UTF-8",
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "client/config",
+			"settings":
+			{
+				"buffer_size": 276,
 				"encoding": "UTF-8",
 				"line_ending": "Windows"
 			}
@@ -321,7 +339,7 @@
 	},
 	"console":
 	{
-		"height": 66.0,
+		"height": 180.0,
 		"history":
 		[
 			"print(sys.version)",
@@ -381,19 +399,18 @@
 	},
 	"expanded_folders":
 	[
-		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages",
-		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-test",
-		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool",
-		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/client"
+		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages"
 	],
 	"file_history":
 	[
+		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-test2/C.hs",
+		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-test2/D.hs",
+		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages2/Packages/haskell-tool/client/ClientManager.py",
 		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/client/config",
 		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/RenameCommand.py",
 		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages2/Packages/haskell-tool/RenameCommand.py",
 		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/ServerControllerCommand.py",
 		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages2/Packages/haskell-tool/ServerControllerCommand.py",
-		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages2/Packages/haskell-tool/client/ClientManager.py",
 		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/ToggleCommand.py",
 		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages2/Packages/haskell-tool/ToggleCommand.py",
 		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool.rar",
@@ -513,9 +530,7 @@
 		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/Haskell Tool/OutputPanelCommand.py",
 		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/Haskell Tool/test",
 		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/Haskell Tool/IsDirtyCommand.py",
-		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/Haskell Tool/IsDirtyCommand",
-		"/C/Users/Zoli/OneDrive/Perger/Közös/Grundi/betegcrunk.tt",
-		"/C/Users/Zoli/OneDrive/Perger/Közös/Grundi/betegcrunk.txt"
+		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/Haskell Tool/IsDirtyCommand"
 	],
 	"find":
 	{
@@ -600,7 +615,7 @@
 	"groups":
 	[
 		{
-			"selected": 0,
+			"selected": 2,
 			"sheets":
 			[
 				{
@@ -609,15 +624,15 @@
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 10274,
+						"buffer_size": 10439,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								7340,
-								7340
+								2397,
+								2397
 							]
 						],
 						"settings":
@@ -626,7 +641,63 @@
 							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
-						"translation.y": 5439.0,
+						"translation.y": 1881.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 2,
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "ToggleCommand.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 508,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								272,
+								272
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 114.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": "client/config",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 276,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								106,
+								106
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Text/Plain text.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 0,
@@ -748,7 +819,7 @@
 	"show_open_files": true,
 	"show_tabs": true,
 	"side_bar_visible": true,
-	"side_bar_width": 373.0,
+	"side_bar_width": 325.0,
 	"status_bar_visible": true,
 	"template_settings":
 	{

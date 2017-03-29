@@ -124,6 +124,11 @@ class ClientManager:
 						error_msg = "Error received: ", message.get("errorMsg")
 						sublime.error_message(error_msg)
 
+					elif message.get("tag") == "LoadedModules":
+						sublime.message_dialog(msg_dialog)
+						if(message.get("loadedModules") != []):
+							self.set_toggled_packages()
+
 					else :
 						print("Még nem kezeljük ezt a hibát: ", message)
 						msg_dialog = "The received message is: " + str(message)
@@ -204,16 +209,16 @@ class ClientManager:
 	#	we should create a flag like: [SERVER_PATH]:
 	def set_servers_path(self, path):
 		
-		for i in package:
-			self.config_packages.append(i)
-		
-		self.config['packages'] = self.config_packages
+		self.server_path = path
+		self.config['server_path'] = self.server_path
 		self.set_config_file()
 
 
-	def set_toggled_packages(self, package):
+	def set_toggled_packages(self):
 
-		self.config_packages.append(package)
+		for i in self.sent_package_paths:
+			self.config_packages.append(i)
+		
 		self.config['packages'] = self.config_packages
 		self.set_config_file()
 
