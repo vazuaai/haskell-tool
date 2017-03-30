@@ -30,6 +30,8 @@ class ServerControllerCommand(sublime_plugin.TextCommand):
 		self.server.run(get_client_manager().server_path)
 		self.client.startclient()
 
+		
+
 	
 		
 	

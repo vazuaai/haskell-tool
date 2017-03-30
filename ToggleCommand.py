@@ -9,15 +9,13 @@ class ToggleCommand(sublime_plugin.WindowCommand):
 
 	def run(self, paths=[]):
 
-		isSendable = False
+		is_sendable = False
 
 		for item in paths:
-
 			if(os.path.isdir(item) != True):
 				sublime.message_dialog("You can toggle only directories!")
 			else:
-				isSendable = True
+				is_sendable = True
 
-		if (isSendable == True):
-			print("HEREEEE")
+		if (is_sendable == True):
 			get_client_manager().refresh_packages(paths, "toggle")

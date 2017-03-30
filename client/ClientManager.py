@@ -66,6 +66,8 @@ class ClientManager:
 		thread = Thread(target = self.connect, args=())
 		thread.start()
 		print("Connect thread started.")
+
+		
 		
 
 	# Definition:
@@ -91,6 +93,7 @@ class ClientManager:
 		print("Receive thread started.")
 		self.connected = True
 		self.is_server_alive = True
+		sublime.active_window().run_command("toggle", {"paths": self.config_packages})
 
 	# Definition:
 	# This method is responsible for catch response messages from the server.
@@ -165,9 +168,10 @@ class ClientManager:
 	#
 	def init_client(self, edit):
 		# itt már rögtön elküldjük a szervernek a megnyitott mappákat?
-		self.sent_packages = sublime.active_window().folders()
+		#self.sent_packages = sublime.active_window().folders()
 		self.edit = edit
 		self.init_config_file()
+		print("CONFIG PACKAGES: ", self.config_packages)
 		
 
 	# Definition:
@@ -213,18 +217,21 @@ class ClientManager:
 		self.config['server_path'] = self.server_path
 		self.set_config_file()
 
-
 	def set_toggled_packages(self):
 
 		for i in self.sent_package_paths:
-			self.config_packages.append(i)
+			if(not(i in self.config_packages)):
+				self.config_packages.append(i)
 		
 		self.config['packages'] = self.config_packages
 		self.set_config_file()
 
 	def remove_untoggled_packages(self, package):
 
-		self.config_packages.remove(package)
+		for item in package:
+			print("UT: ", item)
+			self.config_packages.remove(item)
+			
 		self.config['packages'] = self.config_packages
 		self.set_config_file()
 
@@ -254,8 +261,6 @@ class ClientManager:
 			sublime.active_window().run_command("set_server_path")
 			config_file.close()
 
-		
-
 	def init_packages_from_config_file(self):
 		config_file = open(self.config_file_path, 'r')
 		config_str = config_file.read()
@@ -265,6 +270,7 @@ class ClientManager:
 
 			if( value != None ):
 				self.config_packages = value
+
 		except ValueError:
 			sublime.message_dialog("There isn't any packages to initialize.")
 			config_file.close()
@@ -296,14 +302,14 @@ class ClientManager:
 			
 			data = {}
 			is_sendable = False
-			
-			if((command == "toggle") and not(paths in self.config_packages)):
+			if((command == "toggle")):
 				is_sendable = True	
 				data['tag'] = 'AddPackages'
 				data['addedPathes'] = paths
 				self.sent_package_paths = paths
 
-			elif (command == "untoggle" and (paths in self.config_packages)):
+			elif (command == "untoggle"):
+				print("In remove")
 				is_sendable = True
 				data['tag'] = 'RemovePackages'
 				data['removedPathes'] = paths
