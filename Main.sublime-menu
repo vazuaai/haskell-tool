@@ -13,7 +13,6 @@
                     { "caption": "Start/Stop Haskell Tool", "command": "server_controller", "id": "end", "checkbox": "False"},
                     { "caption": "Check Server", "command": "keep_alive", "id": "end"},   
                     { "caption": "Stop Client", "command": "stop_client", "id": "end"},
-                    { "caption": "Show Status", "command": "show_on_status_bar", "id": "end"},
                     { 
                     "caption": "Refactoring", 
                     "command": "refactoring", 

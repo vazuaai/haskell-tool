@@ -30,6 +30,8 @@ class ClientManager:
 			# server
 			self.server_path = ""
 			self.is_server_alive = False
+			self.server_init_error = False
+			sublime.active_window().active_view().set_status('serverStatus', "Disconnected from server " )
 
 			# client
 			ClientManager._instance = self
@@ -67,9 +69,6 @@ class ClientManager:
 		thread.start()
 		print("Connect thread started.")
 
-		
-		
-
 	# Definition:
 	# 
 	# This methods task is connecting to the server and start a thread with receive() method.
@@ -93,6 +92,7 @@ class ClientManager:
 		print("Receive thread started.")
 		self.connected = True
 		self.is_server_alive = True
+		sublime.active_window().active_view().set_status('serverStatus', "Connected to server ")
 		sublime.active_window().run_command("toggle", {"paths": self.config_packages})
 
 	# Definition:
@@ -149,17 +149,23 @@ class ClientManager:
 	#
 	def send_message(self, msg):
 
-		with self.lock:
+		try:
 
-			if msg != b'\n' and msg != b'':
-				print("")
-				print("SENDED MESSAGE: ", msg)
-				print("")
-				self.socket.send(msg)
-				self.is_alive_counter += 1
+			with self.lock:
 
-			else: 
-				print("This message is a ", msg, " we can't send that!")
+				if msg != b'\n' and msg != b'':
+					print("")
+					print("SENDED MESSAGE: ", msg)
+					print("")
+					self.socket.send(msg)
+					self.is_alive_counter += 1
+					
+				else: 
+					print("This message is a ", msg, " we can't send that!")
+
+		except ConnectionResetError:
+			self.is_server_alive = False
+			sublime.error_message("Connection with server closed.")
 
 
 	# Definition:
@@ -171,7 +177,6 @@ class ClientManager:
 		#self.sent_packages = sublime.active_window().folders()
 		self.edit = edit
 		self.init_config_file()
-		print("CONFIG PACKAGES: ", self.config_packages)
 		
 
 	# Definition:
@@ -257,6 +262,7 @@ class ClientManager:
 			if( value != None ):
 				self.server_path = value
 		except ValueError:
+			self.server_init_error = True
 			sublime.message_dialog("The the servers path is not given yet! Please give it below.")
 			sublime.active_window().run_command("set_server_path")
 			config_file.close()
