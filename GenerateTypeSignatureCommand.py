@@ -17,4 +17,4 @@ from .client.ClientManager import get_client_manager
 class GenerateTypeSignatureCommand(sublime_plugin.TextCommand):
 
 	def run(self,edit):
-		get_client_manager().perform_refactoring(self.edit, "GenerateTypeSignature", "")
+		get_client_manager().perform_refactoring(edit, "GenerateSignature", None)

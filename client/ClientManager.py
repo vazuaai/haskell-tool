@@ -7,6 +7,7 @@ import os
 import sys
 import socket 
 import time 
+import datetime
 import errno      
 import json 
 import re
@@ -31,8 +32,7 @@ class ClientManager:
 			self.server_path = ""
 			self.is_server_alive = False
 			self.server_init_error = False
-			sublime.active_window().active_view().set_status('serverStatus', "Disconnected from server " )
-
+			
 			# client
 			ClientManager._instance = self
 			self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -57,6 +57,11 @@ class ClientManager:
 			self.config_packages = []
 			self.config_file_path = os.path.dirname(__file__) + "\\config"
 
+			#status bar
+			self.sb_connection = "Connection: "
+			self.sb_info = "Info: "
+			self.sb_error = "Error message: "
+			sublime.active_window().active_view().set_status('serverStatus', ''.join([self.sb_connection,'disconnected from server']))
 
 	# Definition:
 	# It's defined the host, the port and starts a connection thread.
@@ -75,7 +80,7 @@ class ClientManager:
 	# After connection the lock released and the tool can send messages after that.
 	#
 	def connect(self):
-
+		
 		while True:
 
 			try:
@@ -84,15 +89,18 @@ class ClientManager:
 				break
 
 			except Exception as e:
+				self.status_thread_runner(self.sb_error, "can't make a connection with server")
+				print("Receive threads exception: ",e)
 				time.sleep(0.1)
 
 		thread = Thread(target = self.receive, args=())
 		thread.start()
 
 		print("Receive thread started.")
+
 		self.connected = True
 		self.is_server_alive = True
-		sublime.active_window().active_view().set_status('serverStatus', "Connected to server ")
+		sublime.active_window().active_view().set_status('serverStatus', ''.join([self.sb_connection,'connected to server']))
 		sublime.active_window().run_command("toggle", {"paths": self.config_packages})
 
 	# Definition:
@@ -110,36 +118,30 @@ class ClientManager:
 				del list_of_data[:]
 
 				if data == b'\n' or data == b'':
-					print("This message is a ", data, " we can't send that!")
 					continue 
 				else:
 					list_of_data.append(data)
 				
 				for i in list_of_data:
 					
-					print("RECEIVED MESSAGE: ",i)
-					print("")
 					message = json.loads(i.decode("utf-8"))
-					msg_dialog = "The received message is: " + str(message)
 					self.is_alive_counter -= 1
 
 					if message.get("tag") == "ErrorMassage":
-						error_msg = "Error received: ", message.get("errorMsg")
-						sublime.error_message(error_msg)
-
+						self.status_thread_runner(self.sb_error, message.get("errorMsg"))
+						
 					elif message.get("tag") == "LoadedModules":
-						sublime.message_dialog(msg_dialog)
+						self.status_thread_runner(self.sb_info, 'modules loaded')
+						
 						if(message.get("loadedModules") != []):
 							self.set_toggled_packages()
 
 					else :
-						print("Még nem kezeljük ezt a hibát: ", message)
-						msg_dialog = "The received message is: " + str(message)
-						sublime.message_dialog(msg_dialog)
+						self.status_thread_runner(self.sb_info, 'message from server handled')
 						
 			except ConnectionResetError:
 				self.is_server_alive = False
-				sublime.error_message("Connection with server closed.")
+				self.status_thread_runner(self.sb_error, 'connection with server closed')
 				break
 
 	# Definition:
@@ -154,27 +156,18 @@ class ClientManager:
 			with self.lock:
 
 				if msg != b'\n' and msg != b'':
-					print("")
-					print("SENDED MESSAGE: ", msg)
-					print("")
 					self.socket.send(msg)
 					self.is_alive_counter += 1
-					
-				else: 
-					print("This message is a ", msg, " we can't send that!")
 
 		except ConnectionResetError:
 			self.is_server_alive = False
-			sublime.error_message("Connection with server closed.")
-
-
+			self.status_thread_runner(self.sb_error, 'connection with server closed')
+			
 	# Definition:
 	# This method intended to make some steps that necessary for
 	# the client, like asks for the opened folders in the project.
 	#
 	def init_client(self, edit):
-		# itt már rögtön elküldjük a szervernek a megnyitott mappákat?
-		#self.sent_packages = sublime.active_window().folders()
 		self.edit = edit
 		self.init_config_file()
 		
@@ -214,13 +207,12 @@ class ClientManager:
 
 
 	# with this method we can change the servers path in config
-	# TODO: its only changes, but what we could do when the config file doesent contain the path
-	#	we should create a flag like: [SERVER_PATH]:
 	def set_servers_path(self, path):
-		
+
 		self.server_path = path
 		self.config['server_path'] = self.server_path
 		self.set_config_file()
+
 
 	def set_toggled_packages(self):
 
@@ -231,6 +223,7 @@ class ClientManager:
 		self.config['packages'] = self.config_packages
 		self.set_config_file()
 
+
 	def remove_untoggled_packages(self, package):
 
 		for item in package:
@@ -239,6 +232,7 @@ class ClientManager:
 			
 		self.config['packages'] = self.config_packages
 		self.set_config_file()
+
 
 	def set_config_file(self):
 		
@@ -251,6 +245,7 @@ class ClientManager:
 			config_file.write(config_str)
 		config_file.close()
 
+
 	def init_servers_path_from_config_file(self):
 
 		config_file = open(self.config_file_path, 'r')
@@ -261,11 +256,13 @@ class ClientManager:
 
 			if( value != None ):
 				self.server_path = value
+
 		except ValueError:
 			self.server_init_error = True
 			sublime.message_dialog("The the servers path is not given yet! Please give it below.")
 			sublime.active_window().run_command("set_server_path")
 			config_file.close()
+
 
 	def init_packages_from_config_file(self):
 		config_file = open(self.config_file_path, 'r')
@@ -278,7 +275,7 @@ class ClientManager:
 				self.config_packages = value
 
 		except ValueError:
-			sublime.message_dialog("There isn't any packages to initialize.")
+			self.status_thread_runner(self.sb_error, "there isn't any packages to initialize")
 			config_file.close()
 		
 
@@ -289,7 +286,7 @@ class ClientManager:
 			self.init_packages_from_config_file()
 
 		except:
-			print("Unexpected error while servers path initialization!")
+			self.status_thread_runner(self.sb_error, "unexpected error while servers path initialization")
 			raise
 
 	# Definition:
@@ -300,7 +297,6 @@ class ClientManager:
 	# and the current_packages. Depending on the event was a remove or add, the
 	# client notifies the server.
 	#
-	# TODO: ide is kell majd az edit!!!
 	#
 	def refresh_packages(self, paths, command):
 
@@ -326,7 +322,7 @@ class ClientManager:
 				byte_message = str.encode(str_message)
 				self.send_message(byte_message)
 
-		
+
 	# Definition:
 	# 
 	def get_selection(self):
@@ -343,6 +339,7 @@ class ClientManager:
 
 		self.selection = str(row_begin) + ":" + str(col_begin) + "-" + str(row_end) + ":" + str(col_end)
 		self.selection_file_name = view.file_name()
+
 
 	def perform_refactoring(self, edit, refactoring_type, details):
 
@@ -415,6 +412,16 @@ class ClientManager:
 		str_message = json.dumps(data)
 		byte_message = str.encode(str_message)
 		self.send_message(byte_message)
+
+	#TODO: definition
+	def show_status(self, msg_type, msg):
+		sublime.active_window().active_view().set_status(msg_type, ''.join([ msg_type, msg]))
+		time.sleep(5)
+		sublime.active_window().active_view().erase_status(msg_type)
+		
+	def status_thread_runner(self, msg_type, msg):
+		thread = Thread(target = self.show_status, args=(msg_type, msg))
+		thread.start()
 
 # static method 
 def get_client_manager():
