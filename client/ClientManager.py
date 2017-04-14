@@ -126,8 +126,9 @@ class ClientManager:
 					
 					message = json.loads(i.decode("utf-8"))
 					self.is_alive_counter -= 1
+					print("RECEIVED MESSAGE: ", message)
 
-					if message.get("tag") == "ErrorMassage":
+					if message.get("tag") == "ErrorMessage":
 						self.status_thread_runner(self.sb_error, message.get("errorMsg"))
 						
 					elif message.get("tag") == "LoadedModules":
@@ -137,11 +138,11 @@ class ClientManager:
 							self.set_toggled_packages()
 
 					else :
-						self.status_thread_runner(self.sb_info, 'message from server handled')
+						self.status_thread_runner(self.sb_info, "received message")
 						
 			except ConnectionResetError:
 				self.is_server_alive = False
-				self.status_thread_runner(self.sb_error, 'connection with server closed')
+				self.status_thread_runner(self.sb_error, 'connection with server unexpectedly closed')
 				break
 
 	# Definition:
@@ -158,10 +159,11 @@ class ClientManager:
 				if msg != b'\n' and msg != b'':
 					self.socket.send(msg)
 					self.is_alive_counter += 1
+					print("SENDED MESSAGE: ", msg)
 
 		except ConnectionResetError:
 			self.is_server_alive = False
-			self.status_thread_runner(self.sb_error, 'connection with server closed')
+			self.status_thread_runner(self.sb_error, 'connection with server unexpectedly closed')
 			
 	# Definition:
 	# This method intended to make some steps that necessary for
@@ -265,12 +267,13 @@ class ClientManager:
 
 
 	def init_packages_from_config_file(self):
+		
 		config_file = open(self.config_file_path, 'r')
 		config_str = config_file.read()
 		try:
 			config_json = json.loads(config_str)
 			value = config_json.get("packages")
-
+			
 			if( value != None ):
 				self.config_packages = value
 
@@ -284,7 +287,7 @@ class ClientManager:
 		try:
 			self.init_servers_path_from_config_file()
 			self.init_packages_from_config_file()
-
+			
 		except:
 			self.status_thread_runner(self.sb_error, "unexpected error while servers path initialization")
 			raise
@@ -347,7 +350,8 @@ class ClientManager:
 		self.get_selection()
 		path = str(self.selection_file_name)
 		details_array = []
-		details_array.append(details)
+		if details != None:
+			details_array.append(details)
 
 		data = {}
 		data['tag'] = 'PerformRefactoring'
