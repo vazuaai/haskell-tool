@@ -26,7 +26,8 @@ class ServerControllerCommand(sublime_plugin.TextCommand):
 		self.client = get_client_manager()
 
 	def run(self,edit):
-		self.client.init_client(edit)
+		self.client.init_config_file()
+		#self.client.init_client(edit)
 		self.server.run(get_client_manager().server_path)
 		self.client.startclient()
 	

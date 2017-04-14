@@ -272,10 +272,54 @@
 	"buffers":
 	[
 		{
+			"file": "client/ClientManager.py",
+			"settings":
+			{
+				"buffer_size": 8593,
+				"encoding": "UTF-8",
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-test/GenerateTypeSignature.hs",
+			"settings":
+			{
+				"buffer_size": 710,
+				"encoding": "UTF-8",
+				"line_ending": "Windows"
+			}
+		},
+		{
 			"file": "client/config",
 			"settings":
 			{
-				"buffer_size": 107,
+				"buffer_size": 198,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-test/Rename.hs",
+			"settings":
+			{
+				"buffer_size": 210,
+				"encoding": "UTF-8",
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "ServerControllerCommand.py",
+			"settings":
+			{
+				"buffer_size": 815,
+				"encoding": "UTF-8",
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "server/ServerManager.py",
+			"settings":
+			{
+				"buffer_size": 848,
 				"encoding": "UTF-8",
 				"line_ending": "Windows"
 			}
@@ -337,7 +381,7 @@
 	},
 	"console":
 	{
-		"height": 211.0,
+		"height": 230.0,
 		"history":
 		[
 			"print(sys.version)",
@@ -405,8 +449,9 @@
 	],
 	"file_history":
 	[
-		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-test/InlineBinding.hs",
+		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/client/config",
 		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-test/Rename.hs",
+		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-test/InlineBinding.hs",
 		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/client/ClientManager.py",
 		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/Main.sublime-menu",
 		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-test/GenerateTypeSignature.hs",
@@ -416,7 +461,6 @@
 		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/InlineBindingCommand.py",
 		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-test/ExtractBinding.hs",
 		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-test/GenerateExports.hs",
-		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/client/config",
 		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/ServerControllerCommand.py",
 		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/README.md",
 		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/server/ServerManager.py",
@@ -536,7 +580,7 @@
 	],
 	"find":
 	{
-		"height": 35.0
+		"height": 34.0
 	},
 	"find_in_files":
 	{
@@ -552,6 +596,13 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"is_alive_counter",
+			"keep_alive_server_runner",
+			"keep_alive_server",
+			"is_alive_counter",
+			"can't make a connection with server",
+			"sublime_plugin",
+			"sys",
 			"Zoli",
 			"can't",
 			"message_dialog",
@@ -645,19 +696,76 @@
 			[
 				{
 					"buffer": 0,
-					"file": "client/config",
+					"file": "client/ClientManager.py",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 107,
+						"buffer_size": 8593,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								1,
-								1
+								1398,
+								1398
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 961.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-test/GenerateTypeSignature.hs",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 710,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								241,
+								241
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Haskell/Haskell.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 5,
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": "client/config",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 198,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
 							]
 						],
 						"settings":
@@ -668,7 +776,93 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 0,
+					"stack_index": 4,
+					"type": "text"
+				},
+				{
+					"buffer": 3,
+					"file": "/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-test/Rename.hs",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 210,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								210,
+								210
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Haskell/Haskell.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				},
+				{
+					"buffer": 4,
+					"file": "ServerControllerCommand.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 815,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								328,
+								328
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 54.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 2,
+					"type": "text"
+				},
+				{
+					"buffer": 5,
+					"file": "server/ServerManager.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 848,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								645,
+								645
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.sublime-syntax",
+							"translate_tabs_to_spaces": false,
+							"word_wrap": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 3,
 					"type": "text"
 				}
 			]
@@ -676,7 +870,7 @@
 	],
 	"incremental_find":
 	{
-		"height": 30.0
+		"height": 26.0
 	},
 	"input":
 	{
@@ -741,7 +935,7 @@
 	"project": "haskell-tools-plugin.sublime-project",
 	"replace":
 	{
-		"height": 56.0
+		"height": 48.0
 	},
 	"save_all_on_build": true,
 	"select_file":
@@ -787,7 +981,7 @@
 	"show_open_files": true,
 	"show_tabs": true,
 	"side_bar_visible": true,
-	"side_bar_width": 301.0,
+	"side_bar_width": 281.0,
 	"status_bar_visible": true,
 	"template_settings":
 	{
