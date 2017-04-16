@@ -1,18 +1,12 @@
-#!/usr/bin/python27  
-
 from __future__ import with_statement
-import sublime
-#import sublime_plugin
-import os
-#import sys
-import socket 
-import time 
-#import datetime
-#import errno      
-import json 
-#import re
 from threading import Thread
 from threading import Lock
+
+import sublime
+import os
+import socket 
+import time    
+import json 
 
 class ClientManager:
 
@@ -29,16 +23,15 @@ class ClientManager:
 			
 			# client
 			ClientManager._instance = self
+			self.host = "127.0.0.1"
+			self.port = 4123
 			self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-			self.connected = False
 
 			# lock
 			self.lock = Lock()
 			self.lock.acquire()
 
 			# packeges
-			self.sent_packages = []
-			self.current_packages = []
 			self.sent_package_paths = ""
 
 			# selection
@@ -58,8 +51,6 @@ class ClientManager:
 
 
 	def startclient(self):
-		self.host = "127.0.0.1"
-		self.port = 4123
 		thread = Thread(target = self.connect, args=())
 		thread.start()
 		print("INFO: Connect thread started.")
@@ -68,7 +59,7 @@ class ClientManager:
 	def connect(self):
 		while True:
 			try:
-				self.connection = self.socket.connect((self.host, self.port))
+				self.socket.connect((self.host, self.port))
 				self.lock.release()
 				break
 
@@ -81,14 +72,12 @@ class ClientManager:
 		thread.start()
 		print("INFO: Receive thread started.")
 
-		self.connected = True
 		self.is_server_alive = True
 		sublime.active_window().active_view().set_status('serverStatus', ''.join([self.sb_connection,'connected to server']))
 		sublime.active_window().run_command("toggle", {"paths": self.config_packages})
 
 
 	def receive(self):
-		incoming = b''
 		list_of_data = []
 
 		while True:
@@ -116,7 +105,7 @@ class ClientManager:
 							self.set_toggled_packages()
 
 					else :
-						self.status_thread_runner(self.sb_info, "received message, for further info please read the log")
+						self.status_thread_runner(self.sb_info, "a message, for further info please read the log")
 						
 			except ConnectionResetError:
 				self.is_server_alive = False
@@ -134,21 +123,7 @@ class ClientManager:
 		except ConnectionResetError:
 			self.is_server_alive = False
 			self.status_thread_runner(self.sb_error, 'connection with server unexpectedly closed')
-			
-
-	def init_client(self, edit):
-		self.edit = edit
-		self.init_config_file()
 		
-
-	def keep_alive(self):
-		data = {}
-		contents_array = []		
-		data['tag'] = 'KeepAlive'
-		data['contents'] = contents_array
-		str_message = json.dumps(data)
-		byte_message = str.encode(str_message)
-		self.send_message(byte_message)
 
 	def set_servers_path(self, path):
 		self.server_path = path
@@ -167,7 +142,6 @@ class ClientManager:
 
 	def remove_untoggled_packages(self, package):
 		for item in package:
-			print("UT: ", item)
 			self.config_packages.remove(item)
 			
 		self.config['packages'] = self.config_packages
@@ -224,6 +198,12 @@ class ClientManager:
 			raise
 
 
+	def encode_and_send(self, data):
+		str_message = json.dumps(data)
+		byte_message = str.encode(str_message)
+		self.send_message(byte_message)
+
+
 	def refresh_packages(self, paths, command):
 		if(self.is_server_alive == True):
 			data = {}
@@ -236,16 +216,13 @@ class ClientManager:
 				self.sent_package_paths = paths
 
 			elif (command == "untoggle"):
-				print("In remove")
 				is_sendable = True
 				data['tag'] = 'RemovePackages'
 				data['removedPathes'] = paths
 				self.remove_untoggled_packages(paths)
 			
 			if is_sendable:
-				str_message = json.dumps(data)
-				byte_message = str.encode(str_message)
-				self.send_message(byte_message)
+				self.encode_and_send(data)
 
 
 	def get_selection(self):
@@ -263,7 +240,7 @@ class ClientManager:
 
 
 	def perform_refactoring(self, edit, refactoring_type, details):
-		self.edit = edit
+		#self.edit = edit
 		self.get_selection()
 		path = str(self.selection_file_name)
 		details_array = []
@@ -282,19 +259,7 @@ class ClientManager:
 			data['editorSelection'] = self.selection
 			
 		data['details'] = details_array
-		str_message = json.dumps(data)
-		byte_message = str.encode(str_message)
-		self.send_message(byte_message)
-
-
-	def stop(self,edit):
-		data = {}
-		contents_array = []
-		data['tag'] = 'Stop'
-		data['contents'] = contents_array
-		str_message = json.dumps(data)
-		byte_message = str.encode(str_message)
-		self.send_message(byte_message)
+		self.encode_and_send(data)
 
 
 	def reload(self, path, action_tpye):
@@ -310,9 +275,7 @@ class ClientManager:
 		data['tag'] = 'ReLoad'
 		data['changedModules'] = changed_modules_array
 		data['removedModules'] = removed_modules_array
-		str_message = json.dumps(data)
-		byte_message = str.encode(str_message)
-		self.send_message(byte_message)
+		self.encode_and_send(data)
 
 
 	def show_status(self, msg_type, msg):
@@ -324,6 +287,14 @@ class ClientManager:
 	def status_thread_runner(self, msg_type, msg):
 		thread = Thread(target = self.show_status, args=(msg_type, msg))
 		thread.start()
+
+
+	def stop(self,edit):
+		data = {}
+		contents_array = []
+		data['tag'] = 'Stop'
+		data['contents'] = contents_array
+		self.encode_and_send(data)
 
 
 def get_client_manager():

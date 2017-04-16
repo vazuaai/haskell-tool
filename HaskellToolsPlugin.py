@@ -1,8 +1,4 @@
-#!/usr/bin/python27 
-
-import sublime
 import sublime_plugin
-import time 
 
 from .client.ClientManager import ClientManager
 from .client.ClientManager import get_client_manager

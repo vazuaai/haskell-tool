@@ -1,7 +1,6 @@
-#!/usr/bin/python27
-
 import sublime
 import subprocess
+
 from threading import Thread
 from ..client.ClientManager import get_client_manager
 
@@ -9,8 +8,7 @@ class ServerManager:
 
 	_instance = None
 
-	def run(self,path):	
-		self.server_path = path	
+	def run(self):	
 		thread = Thread(target = self.startserver, args=())
 		thread.start()
 		print("INFO: Server thread started.")
@@ -18,8 +16,7 @@ class ServerManager:
 
 	def startserver(self):
 		try:
-			server_path = get_client_manager().server_path
-			subprocess.call([server_path, '4123', 'True'])
+			subprocess.call([get_client_manager().server_path, '4123', 'True'])
 
 		except OSError:
 			if (get_client_manager().server_init_error == False):

@@ -2,7 +2,6 @@ import sublime
 import sublime_plugin
 import os
 
-from .client.ClientManager import ClientManager
 from .client.ClientManager import get_client_manager
 
 class ToggleCommand(sublime_plugin.WindowCommand):
