@@ -47,9 +47,11 @@ class ClientManager:
 			self.sb_connection = "Connection: "
 			self.sb_info = "Info: "
 			self.sb_error = "Error message: "
+			self.sb_event_msg_type = ""
+			self.sb_event_msg = ""
+			self.is_sb_event_active = False;
 			sublime.active_window().active_view().set_status('serverStatus', ''.join([self.sb_connection,'disconnected from server']))
-
-
+			
 	def startclient(self):
 		thread = Thread(target = self.connect, args=())
 		thread.start()
@@ -57,16 +59,19 @@ class ClientManager:
 
 
 	def connect(self):
+		isConnected = False
 		while True:
 			try:
 				self.socket.connect((self.host, self.port))
 				self.lock.release()
+				isConnected = True
 				break
 
 			except Exception as e:
-				time.sleep(0.1)
-				self.status_thread_runner(self.sb_error, "can't make a connection with server")
-				print("Receive threads exception: ",e)
+				if(isConnected):
+					time.sleep(0.1)
+					self.status_thread_runner(self.sb_error, "can't make a connection with server")
+					print("Receive threads exception: ",e)
 				
 		thread = Thread(target = self.receive, args=())
 		thread.start()
@@ -75,7 +80,7 @@ class ClientManager:
 		self.is_server_alive = True
 		sublime.active_window().active_view().set_status('serverStatus', ''.join([self.sb_connection,'connected to server']))
 		sublime.active_window().run_command("toggle", {"paths": self.config_packages})
-
+					
 
 	def receive(self):
 		list_of_data = []
@@ -99,16 +104,18 @@ class ClientManager:
 						self.status_thread_runner(self.sb_error, message.get("errorMsg"))
 
 					elif message.get("tag") == "LoadedModules":
-						self.status_thread_runner(self.sb_info, 'modules loaded')
-						
+							
 						if(message.get("loadedModules") != []):
 							self.set_toggled_packages()
+							self.status_thread_runner(self.sb_info, 'modules loaded')
 
 					else :
-						self.status_thread_runner(self.sb_info, "a message, for further info please read the log")
-						
+						self.status_thread_runner(self.sb_info, "a message handled, for further info please read the log")
+						print("Handled message: ", message)
+
 			except ConnectionResetError:
 				self.is_server_alive = False
+				sublime.active_window().active_view().set_status('serverStatus', ''.join([self.sb_connection,'disconnected from server']))
 				self.status_thread_runner(self.sb_error, 'connection with server unexpectedly closed')
 				break
 
@@ -165,14 +172,20 @@ class ClientManager:
 		try:
 			config_json = json.loads(config_str)
 			value = config_json.get("server_path")
+			
 			if( value != None ):
 				self.server_path = value
+			else:
+				self.server_init_error = True
+				sublime.message_dialog("The servers path is not given yet! Please give it below.")
+				sublime.active_window().run_command("set_server_path")
 
 		except ValueError:
 			self.server_init_error = True
-			sublime.message_dialog("The the servers path is not given yet! Please give it below.")
+			sublime.message_dialog("The servers path is not valid or not given yet! Please give it below.")
 			sublime.active_window().run_command("set_server_path")
-			config_file.close()
+		
+		config_file.close()
 
 
 	def init_packages_from_config_file(self):
@@ -183,19 +196,22 @@ class ClientManager:
 			value = config_json.get("packages")
 			if( value != None ):
 				self.config_packages = value
+			else: 
+				self.status_thread_runner(self.sb_error, "there isn't any packages to initialize")
 
 		except ValueError:
 			self.status_thread_runner(self.sb_error, "there isn't any packages to initialize")
-			config_file.close()
+		
+		config_file.close()
 		
 
 	def init_config_file(self):
 		try:
 			self.init_servers_path_from_config_file()
 			self.init_packages_from_config_file()
-		except:
-			self.status_thread_runner(self.sb_error, "unexpected error while servers path initialization")
-			raise
+		except Exception as exc:
+			self.status_thread_runner(self.sb_error, "unexpected error while config file initialization")
+			print("Exception thrown at config file initialization: ", exc)
 
 
 	def encode_and_send(self, data):
@@ -279,9 +295,17 @@ class ClientManager:
 
 
 	def show_status(self, msg_type, msg):
-		sublime.active_window().active_view().set_status(msg_type, ''.join([ msg_type, msg]))
+
+		self.sb_event_msg_type = msg_type
+		self.sb_event_msg = ''.join([ msg_type, msg])
+
+		sublime.active_window().active_view().set_status(self.sb_event_msg_type, self.sb_event_msg)
+		self.is_sb_event_active = True
+					
 		time.sleep(5)
-		sublime.active_window().active_view().erase_status(msg_type)
+
+		sublime.active_window().active_view().erase_status(self.sb_event_msg_type)
+		self.is_sb_event_active = False
 		
 
 	def status_thread_runner(self, msg_type, msg):

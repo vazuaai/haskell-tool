@@ -13,7 +13,7 @@ class HaskellToolsPlugin(sublime_plugin.EventListener):
 
     def on_post_save(self, view):
         print(view.file_name(), "just got saved")
-        if ClientManager._instance.connected is True:
+        if(get_client_manager().is_server_alive == True):
             ClientManager._instance.reload(view.file_name(), "saved")
 
     def on_new(self, view):
@@ -24,11 +24,16 @@ class HaskellToolsPlugin(sublime_plugin.EventListener):
 
     def on_activated(self, view):
         print(view.file_name(), "is now the active view")
-        # if(get_client_manager().is_server_alive == True):
-        #     view.set_status('serverStatus', "Connected to server " )
-        # else:
-        #     view.set_status('serverStatus', "Disconnected from server " )
+        
+        if(get_client_manager().is_server_alive == True):
+            view.set_status('serverStatus', "Connected to server ")
+        else:
+            view.set_status('serverStatus', "Disconnected from server ")
 
+        if(get_client_manager().is_sb_event_active == True):
+            view.set_status(get_client_manager().sb_event_msg_type, get_client_manager().sb_event_msg)
+        else:
+            view.erase_status(get_client_manager().sb_event_msg_type)
 
     def on_close(self, view):
         print(view.file_name(), "is no more")

@@ -20,7 +20,7 @@ class ServerManager:
 
 		except OSError:
 			if (get_client_manager().server_init_error == False):
-				sublime.message_dialog("The the servers path not valid! Please give below the servers path.")
+				sublime.message_dialog("The the servers path not valid! Please give it below.")
 				sublime.active_window().run_command("set_server_path")
 
 
