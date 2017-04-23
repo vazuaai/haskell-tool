@@ -11,8 +11,9 @@ class ToggleCommand(sublime_plugin.WindowCommand):
 		is_sendable = False
 
 		for item in paths:
-			if(os.path.isdir(item) != True):
-				sublime.message_dialog("You can toggle only directories!")
+
+			if(os.path.isdir(item) != True ):
+				sublime.message_dialog("You can toggle only real directories!")
 			else:
 				is_sendable = True
 

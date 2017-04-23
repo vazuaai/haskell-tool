@@ -13,16 +13,14 @@ class ServerManager:
 		thread.start()
 		print("INFO: Server thread started.")
 
-
 	def startserver(self):
 		try:
-			subprocess.call([get_client_manager().server_path, '4123', 'True'])
+			subprocess.call([get_client_manager().server_path, str(get_client_manager().port), 'True'])
 
 		except OSError:
 			if (get_client_manager().server_init_error == False):
 				sublime.message_dialog("The the servers path not valid! Please give it below.")
 				sublime.active_window().run_command("set_server_path")
-
 
 def get_server_manager():
 	if ServerManager._instance is None:

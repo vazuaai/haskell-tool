@@ -101,6 +101,7 @@ class ClientManager:
 					print("RECEIVED MESSAGE: ", message)
 
 					if message.get("tag") == "ErrorMessage":
+						sublime.message_dialog(message.get("errorMsg"))
 						self.status_thread_runner(self.sb_error, message.get("errorMsg"))
 
 					elif message.get("tag") == "LoadedModules":
@@ -133,9 +134,12 @@ class ClientManager:
 		
 
 	def set_servers_path(self, path):
-		self.server_path = path
-		self.config['server_path'] = self.server_path
-		self.set_config_file()
+		if(path != ""):
+			self.server_path = path
+			self.config['server_path'] = self.server_path
+			self.set_config_file()
+		else:
+			sublime.message_dialog("Empty path value is not valid.")
 
 
 	def set_toggled_packages(self):
@@ -148,11 +152,17 @@ class ClientManager:
 
 
 	def remove_untoggled_packages(self, package):
+		is_sendable = True
 		for item in package:
-			self.config_packages.remove(item)
+			try:
+				self.config_packages.remove(item)
+			except ValueError as ve:
+				is_sendable = False
+				sublime.message_dialog("This file was not toggled before!")
 			
-		self.config['packages'] = self.config_packages
-		self.set_config_file()
+		if(is_sendable):
+			self.config['packages'] = self.config_packages
+			self.set_config_file()
 
 
 	def set_config_file(self):
@@ -167,22 +177,17 @@ class ClientManager:
 
 
 	def init_servers_path_from_config_file(self):
+
 		config_file = open(self.config_file_path, 'r')
 		config_str = config_file.read()
-		try:
-			config_json = json.loads(config_str)
-			value = config_json.get("server_path")
-			
-			if( value != None ):
-				self.server_path = value
-			else:
-				self.server_init_error = True
-				sublime.message_dialog("The servers path is not given yet! Please give it below.")
-				sublime.active_window().run_command("set_server_path")
+		config_json = json.loads(config_str)
+		value = config_json.get("server_path")
 
-		except ValueError:
+		if( value != None ):
+			self.server_path = value
+		else:
 			self.server_init_error = True
-			sublime.message_dialog("The servers path is not valid or not given yet! Please give it below.")
+			sublime.message_dialog("The servers path is not given yet! Please give it below.")
 			sublime.active_window().run_command("set_server_path")
 		
 		config_file.close()
@@ -194,7 +199,8 @@ class ClientManager:
 		try:
 			config_json = json.loads(config_str)
 			value = config_json.get("packages")
-			if( value != None ):
+			if( (value != None) and (len(value) != 0)):
+				print(len(value))
 				self.config_packages = value
 			else: 
 				self.status_thread_runner(self.sb_error, "there isn't any packages to initialize")
@@ -221,6 +227,7 @@ class ClientManager:
 
 
 	def refresh_packages(self, paths, command):
+		
 		if(self.is_server_alive == True):
 			data = {}
 			is_sendable = False
@@ -256,27 +263,32 @@ class ClientManager:
 
 
 	def perform_refactoring(self, edit, refactoring_type, details):
-		#self.edit = edit
-		self.get_selection()
-		path = str(self.selection_file_name)
-		details_array = []
 
-		if details != None:
-			details_array.append(details)
-
-		data = {}
-		data['tag'] = 'PerformRefactoring'
-		data['refactoring'] = refactoring_type
-		data['modulePath'] = path
-
-		if(refactoring_type == "OrganizeImports" or refactoring_type == "GenerateExports"):
-			data['editorSelection'] = ""
-		else:
-			data['editorSelection'] = self.selection
+		if(self.is_server_alive):
 			
-		data['details'] = details_array
-		self.encode_and_send(data)
+			self.get_selection()
+			path = str(self.selection_file_name)
+			details_array = []
 
+			if details != None:
+				details_array.append(details)
+
+			data = {}
+			data['tag'] = 'PerformRefactoring'
+			data['refactoring'] = refactoring_type
+			data['modulePath'] = path
+
+			if(refactoring_type == "OrganizeImports" or refactoring_type == "GenerateExports"):
+				data['editorSelection'] = ""
+			else:
+				data['editorSelection'] = self.selection
+				
+			data['details'] = details_array
+			self.encode_and_send(data)
+
+		else:
+			sublime.message_dialog("You need to start haskell tool first!")
+			
 
 	def reload(self, path, action_tpye):
 		changed_modules_array = []
@@ -311,7 +323,6 @@ class ClientManager:
 	def status_thread_runner(self, msg_type, msg):
 		thread = Thread(target = self.show_status, args=(msg_type, msg))
 		thread.start()
-
 
 	def stop(self,edit):
 		data = {}
