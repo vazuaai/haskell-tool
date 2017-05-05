@@ -4,6 +4,46 @@
 		"selected_items":
 		[
 			[
+				"stop_",
+				"stop_client_but_server"
+			],
+			[
+				"stop",
+				"stop_client_but_server"
+			],
+			[
+				"clie",
+				"client"
+			],
+			[
+				"client",
+				"ClientManager"
+			],
+			[
+				"ini",
+				"init_variables"
+			],
+			[
+				"socket",
+				"close_socket"
+			],
+			[
+				"close",
+				"close_socket"
+			],
+			[
+				"kill",
+				"kill_server"
+			],
+			[
+				"eras",
+				"erase_status_bar"
+			],
+			[
+				"set_s",
+				"set_status_bar"
+			],
+			[
 				"is",
 				"is_sendable"
 			],
@@ -22,10 +62,6 @@
 			[
 				"encode",
 				"encode_and_send"
-			],
-			[
-				"client",
-				"client"
 			],
 			[
 				"Co",
@@ -288,11 +324,22 @@
 	"buffers":
 	[
 		{
+			"contents": "from __future__ import with_statement\nfrom threading import Thread\nfrom threading import Lock\n\nimport sublime\nimport os\nimport socket \nimport time    \nimport json \n\nclass ClientManager:\n\n\t_instance = None\n\n\tdef __init__(self):\n\t\t# server\n\t\tself.server_path = \"\"\n\t\tself.is_server_alive = False\n\t\tself.server_init_error = False\n\t\t\n\t\t# client\n\t\tClientManager._instance = self\n\t\tself.host = \"127.0.0.1\"\n\t\tself.port = 4123\n\n\t\t# lock\n\t\tself.lock = Lock()\n\t\tself.lock.acquire()\n\n\t\t# packeges\n\t\tself.sent_package_paths = \"\"\n\n\t\t# selection\n\t\tself.selection = \"\"\n\t\tself.selection_file_name = \"\"\n\n\t\t#config\n\t\tself.config = {}\n\t\tself.config_packages = []\n\t\tself.config_file_path = os.path.dirname(__file__) + \"\\\\config\"\n\n\t\t#status bar\n\t\tself.sb_connection = \"Connection: \"\n\t\tself.sb_info = \"Info: \"\n\t\tself.sb_error = \"Error message: \"\n\t\tself.sb_event_msg_type = \"\"\n\t\tself.sb_event_msg = \"\"\n\t\tself.is_sb_event_active = False;\n\t\tsublime.active_window().active_view().set_status('serverStatus', ''.join([self.sb_connection,'disconnected from server']))\n\n\t\tself.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)\n\t\tself.is_client_closable = False\n\n\t# def reconnect(self):\n\t# \tself.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)\n\t# \tself.is_client_closable = False\n\n\n\tdef startclient(self):\n\t\tthread = Thread(target = self.connect, args=())\n\t\tthread.start()\n\t\tprint(\"INFO: Connect thread started.\")\n\n\n\tdef connect(self):\n\t\tisConnected = False\n\t\twhile True:\n\t\t\t\n\t\t\ttry:\n\t\t\t\tself.socket.connect((self.host, self.port))\n\t\t\t\tself.lock.release()\n\t\t\t\tisConnected = True\n\t\t\t\tbreak\n\n\t\t\texcept Exception as e:\n\t\t\t\ttime.sleep(0.1)\n\t\t\t\tself.status_thread_runner(self.sb_error, \"can't make a connection with server\")\n\t\t\t\tprint(\"Receive threads exception: \",e)\n\t\t\t\tbreak\n\t\t\t\n\t\tself.is_server_alive = True\t\n\t\tthread = Thread(target = self.receive, args=())\n\t\tthread.start()\n\t\tprint(\"INFO: Receive thread started.\")\n\t\t\n\t\tsublime.active_window().active_view().set_status('serverStatus', ''.join([self.sb_connection,'connected to server']))\n\t\tsublime.active_window().run_command(\"toggle\", {\"paths\": self.config_packages})\n\t\t\t\t\t\n\n\tdef receive(self):\n\t\tlist_of_data = []\n\n\t\twhile True:\n\t\t\ttry:\n\t\t\t\tdata = self.socket.recv(1024)\n\t\t\t\t#self.is_server_alive = True\t\t\n\t\t\t\tdel list_of_data[:]\n\n\t\t\t\tif data == b'\\n' or data == b'':\n\t\t\t\t\tcontinue \n\t\t\t\telse:\n\t\t\t\t\tlist_of_data.append(data)\n\t\t\t\t\n\t\t\t\tfor i in list_of_data:\n\t\t\t\t\tmessage = json.loads(i.decode(\"utf-8\"))\n\t\t\t\t\tprint(\"RECEIVED MESSAGE: \", message)\n\n\t\t\t\t\tif message.get(\"tag\") == \"ErrorMessage\":\n\t\t\t\t\t\tsublime.message_dialog(message.get(\"errorMsg\"))\n\t\t\t\t\t\tself.status_thread_runner(self.sb_error, message.get(\"errorMsg\"))\n\n\t\t\t\t\telif message.get(\"tag\") == \"LoadedModules\":\n\t\t\t\t\t\t\t\n\t\t\t\t\t\tif(message.get(\"loadedModules\") != []):\n\t\t\t\t\t\t\tself.set_toggled_packages()\n\t\t\t\t\t\t\tself.status_thread_runner(self.sb_info, 'modules loaded')\n\n\t\t\t\t\telse :\n\t\t\t\t\t\tself.status_thread_runner(self.sb_info, \"a message handled, for further info please read the log\")\n\t\t\t\t\t\tprint(\"Handled message: \", message)\n\n\t\t\texcept Exception:\n\t\t\t\tself.is_server_alive = False\n\t\t\t\tsublime.active_window().active_view().set_status('serverStatus', ''.join([self.sb_connection,'disconnected from server']))\n\t\t\t\tself.status_thread_runner(self.sb_error, 'connection with server unexpectedly closed')\n\t\t\t\tself.stop_client_but_server()\n\t\t\t\tbreak\n\n\n\tdef send_message(self, msg):\n\t\ttry:\n\t\t\twith self.lock:\n\t\t\t\tif msg != b'\\n' and msg != b'':\n\t\t\t\t\tself.socket.send(msg)\n\t\t\t\t\tprint(\"SENDED MESSAGE: \", msg)\n\n\t\texcept ConnectionResetError:\n\t\t\tself.is_server_alive = False\n\t\t\tself.status_thread_runner(self.sb_error, 'connection with server unexpectedly closed')\n\t\t\tself.stop_client_but_server()\t\t\t\n\n\tdef set_servers_path(self, path):\n\t\tif(path != \"\"):\n\t\t\tself.server_path = path\n\t\t\tself.config['server_path'] = self.server_path\n\t\t\tself.set_config_file()\n\t\telse:\n\t\t\tsublime.message_dialog(\"Empty path value is not valid.\")\n\n\n\tdef set_toggled_packages(self):\n\t\tfor i in self.sent_package_paths:\n\t\t\tif(not(i in self.config_packages)):\n\t\t\t\tself.config_packages.append(i)\n\t\t\n\t\tself.config['packages'] = self.config_packages\n\t\tself.set_config_file()\n\n\n\tdef remove_untoggled_packages(self, package):\n\t\tis_sendable = True\n\t\tfor item in package:\n\t\t\ttry:\n\t\t\t\tself.config_packages.remove(item)\n\t\t\texcept ValueError as ve:\n\t\t\t\tis_sendable = False\n\t\t\t\tsublime.message_dialog(\"This file was not toggled before!\")\n\t\t\t\n\t\tif(is_sendable):\n\t\t\tself.config['packages'] = self.config_packages\n\t\t\tself.set_config_file()\n\n\n\tdef set_config_file(self):\n\t\topen(self.config_file_path,'w').close\n\t\tself.config['server_path'] = self.server_path\n\t\tself.config['packages'] = self.config_packages\n\t\tconfig_str = json.dumps(self.config)\n\n\t\twith open(self.config_file_path, 'w') as config_file:\n\t\t\tconfig_file.write(config_str)\n\t\tconfig_file.close()\n\n\n\tdef init_servers_path_from_config_file(self):\n\n\t\tconfig_file = open(self.config_file_path, 'r')\n\t\tconfig_str = config_file.read()\n\t\tconfig_json = json.loads(config_str)\n\t\tvalue = config_json.get(\"server_path\")\n\n\t\tif( value != None ):\n\t\t\tself.server_path = value\n\t\telse:\n\t\t\tself.server_init_error = True\n\t\t\tsublime.message_dialog(\"The servers path is not given yet! Please give it below.\")\n\t\t\tsublime.active_window().run_command(\"set_server_path\")\n\t\t\n\t\tconfig_file.close()\n\n\n\tdef init_packages_from_config_file(self):\n\t\tconfig_file = open(self.config_file_path, 'r')\n\t\tconfig_str = config_file.read()\n\t\ttry:\n\t\t\tconfig_json = json.loads(config_str)\n\t\t\tvalue = config_json.get(\"packages\")\n\t\t\tif( (value != None) and (len(value) != 0)):\n\t\t\t\tself.config_packages = value\n\t\t\telse: \n\t\t\t\tself.status_thread_runner(self.sb_error, \"there isn't any packages to initialize\")\n\t\texcept ValueError:\n\t\t\tself.status_thread_runner(self.sb_error, \"there isn't any packages to initialize\")\n\t\t\n\t\tconfig_file.close()\n\t\t\n\n\tdef init_config_file(self):\n\t\ttry:\n\t\t\tself.init_servers_path_from_config_file()\n\t\t\tself.init_packages_from_config_file()\n\t\texcept Exception as exc:\n\t\t\tself.status_thread_runner(self.sb_error, \"unexpected error while config file initialization\")\n\t\t\tprint(\"Exception thrown at config file initialization: \", exc)\n\n\n\tdef encode_and_send(self, data):\n\t\tstr_message = json.dumps(data)\n\t\tbyte_message = str.encode(str_message)\n\t\tself.send_message(byte_message)\n\n\n\tdef refresh_packages(self, paths, command):\n\t\t\n\t\tif(self.is_server_alive == True):\n\t\t\tdata = {}\n\t\t\tis_sendable = False\n\n\t\t\tif((command == \"toggle\")):\n\t\t\t\tis_sendable = True\t\n\t\t\t\tdata['tag'] = 'AddPackages'\n\t\t\t\tdata['addedPathes'] = paths\n\t\t\t\tself.sent_package_paths = paths\n\n\t\t\telif (command == \"untoggle\"):\n\t\t\t\tis_sendable = True\n\t\t\t\tdata['tag'] = 'RemovePackages'\n\t\t\t\tdata['removedPathes'] = paths\n\t\t\t\tself.remove_untoggled_packages(paths)\n\t\t\t\n\t\t\tif is_sendable:\n\t\t\t\tself.encode_and_send(data)\n\n\n\tdef get_selection(self):\n\t\tview = sublime.active_window().active_view()\n\t\trow_begin, col_begin = view.rowcol(view.sel()[0].begin())\n\t\trow_end, col_end = view.rowcol(view.sel()[0].end())\n\n\t\trow_begin += 1\n\t\tcol_begin += 1\n\t\trow_end += 1\n\t\tcol_end += 1\n\n\t\tself.selection = str(row_begin) + \":\" + str(col_begin) + \"-\" + str(row_end) + \":\" + str(col_end)\n\t\tself.selection_file_name = view.file_name()\n\n\n\tdef perform_refactoring(self, edit, refactoring_type, details):\n\n\t\tif(self.is_server_alive):\n\t\t\t\n\t\t\tself.get_selection()\n\t\t\tpath = str(self.selection_file_name)\n\t\t\tdetails_array = []\n\n\t\t\tif details != None:\n\t\t\t\tdetails_array.append(details)\n\n\t\t\tdata = {}\n\t\t\tdata['tag'] = 'PerformRefactoring'\n\t\t\tdata['refactoring'] = refactoring_type\n\t\t\tdata['modulePath'] = path\n\n\t\t\tif(refactoring_type == \"OrganizeImports\" or refactoring_type == \"GenerateExports\"):\n\t\t\t\tdata['editorSelection'] = \"\"\n\t\t\telse:\n\t\t\t\tdata['editorSelection'] = self.selection\n\t\t\t\t\n\t\t\tdata['details'] = details_array\n\t\t\tself.encode_and_send(data)\n\n\t\telse:\n\t\t\tsublime.message_dialog(\"You need to start haskell tool first!\")\n\t\t\t\n\n\tdef reload(self, path, action_tpye):\n\t\tchanged_modules_array = []\n\t\tremoved_modules_array = []\n\t\tdata = {}\n\n\t\tif action_tpye == \"saved\":\n\t\t\tchanged_modules_array.append(path)\n\t\telif action_tpye == \"removed\":\n\t\t\tremoved_modules_array.append(path)\n\n\t\tdata['tag'] = 'ReLoad'\n\t\tdata['changedModules'] = changed_modules_array\n\t\tdata['removedModules'] = removed_modules_array\n\t\tself.encode_and_send(data)\n\n\n\tdef show_status(self, msg_type, msg):\n\t\tself.set_status_bar()\n\t\ttime.sleep(5)\n\t\tself.erase_status_bar()\n\t\t\n\tdef set_status_bar(self):\n\t\tsublime.active_window().active_view().set_status(self.sb_event_msg_type, self.sb_event_msg)\n\t\tself.is_sb_event_active = True\n\n\tdef erase_status_bar(self):\n\t\tsublime.active_window().active_view().erase_status(self.sb_event_msg_type)\n\t\tself.is_sb_event_active = False\n\n\tdef status_thread_runner(self, msg_type, msg):\n\t\tself.sb_event_msg_type = msg_type\n\t\tself.sb_event_msg = ''.join([ msg_type, msg])\n\n\t\tthread = Thread(target = self.show_status, args=(msg_type, msg))\n\t\tthread.start()\n\n\tdef stop_client(self):\n\t\tif(self.is_server_alive):\t\n\t\t\tdata = {}\n\t\t\tcontents_array = []\n\t\t\tdata['tag'] = 'Stop'\n\t\t\tdata['contents'] = contents_array\n\t\t\tself.encode_and_send(data)\n\t\t\tself.close_socket()\n\t\t\tself.kill_server()\n\t\t\tself.erase_status_bar()\n\t\t\tself.is_client_closable = True\n\t\telse:\n\t\t\tsublime.message_dialog(\"You need to start the tool before you want to stop!\")\n\n\tdef stop_client_but_server(self):\n\t\tdata = {}\n\t\tcontents_array = []\n\t\tdata['tag'] = 'Stop'\n\t\tdata['contents'] = contents_array\n\t\tself.encode_and_send(data)\n\t\tself.close_socket()\n\t\tself.erase_status_bar()\n\t\tself.is_client_closable = True\n\n\tdef close_socket(self):\n\t\tprint(\"SOCKET BEFORE CLOSE: \",self.socket)\n\t\tself.socket.close()\n\t\t\n\n\tdef kill_server(self):\n\t\tself.is_server_alive = False\n\t\tkill_command = 'TASKKILL /F /IM ' + self.server_path\n\t\tos.system(kill_command)\n\ndef get_client_manager():\n\tif ClientManager._instance is None:\n\t\tClientManager._instance = ClientManager()\n\treturn ClientManager._instance\n\ndef get_a_new_client_manager():\n\tClientManager._instance = ClientManager()\n\treturn ClientManager._instance",
 			"file": "client/ClientManager.py",
+			"file_size": 10344,
+			"file_write_time": 131382262611528809,
 			"settings":
 			{
-				"buffer_size": 8944,
+				"buffer_size": 9971,
 				"encoding": "UTF-8",
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "HaskellToolsPlugin.py",
+			"settings":
+			{
+				"buffer_size": 2261,
 				"line_ending": "Windows"
 			}
 		},
@@ -301,15 +348,6 @@
 			"settings":
 			{
 				"buffer_size": 504,
-				"line_ending": "Windows"
-			}
-		},
-		{
-			"file": "ToggleCommand.py",
-			"settings":
-			{
-				"buffer_size": 449,
-				"encoding": "UTF-8",
 				"line_ending": "Windows"
 			}
 		}
@@ -370,7 +408,7 @@
 	},
 	"console":
 	{
-		"height": 124.0,
+		"height": 470.0,
 		"history":
 		[
 			"print(sys.version)",
@@ -431,38 +469,36 @@
 	"expanded_folders":
 	[
 		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages",
-		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-test",
-		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool",
-		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/client",
-		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/server"
+		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool"
 	],
 	"file_history":
 	[
-		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/client/config",
-		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/ToggleCommand.py",
+		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/ServerControllerCommand.py",
+		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-test/Rename.hs",
+		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-test/OrganizeImports.hs",
+		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/FloatOutCommand.py",
+		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/HaskellToolsPlugin.py",
 		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/server/ServerManager.py",
+		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/StopClientCommand.py",
+		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/client/ClientManager.py",
+		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-test/GenerateTypeSignature.hs",
+		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/client/config",
+		"/C/Users/Zoli/Desktop/MENT.py",
+		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-test/InlineBinding.hs",
+		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-test/ExtractBinding.hs",
+		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/ToggleCommand.py",
 		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/SetServerPathCommand.py",
 		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/Side Bar.sublime-menu",
-		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-test/InlineBinding.hs",
-		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/ServerControllerCommand.py",
 		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/ExtractBindingCommand.py",
-		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-test/ExtractBinding.hs",
 		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/RenameCommand.py",
-		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/HaskellToolsPlugin.py",
 		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/haskell-tools-plugin.sublime-project",
-		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-test/Rename.hs",
-		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/client/ClientManager.py",
 		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/UntoggleCommand.py",
 		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/OrganizeImportsCommand.py",
 		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/InlineBindingCommand.py",
 		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/GenerateTypeSignatureCommand.py",
 		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/GenerateExportsCommand.py",
-		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/FloatOutCommand.py",
 		"/E/Szakdolgozat/clientmanager_methods.py",
-		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/StopClientCommand.py",
-		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-test/GenerateTypeSignature.hs",
 		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/Main.sublime-menu",
-		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-test/OrganizeImports.hs",
 		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/GenerateExportsCommands.py",
 		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-test/GenerateExports.hs",
 		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/README.md",
@@ -564,8 +600,7 @@
 		"/C/Users/Zoli/AppData/Local/Temp/scp17940/afs/inf.elte.hu/user/v/va/vazuaai/2016_2017_1/os/bead_01/bead.c",
 		"/C/Program Files/Sublime Text 3/sublime_plugin.py",
 		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/User/Python.sublime-settings",
-		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/Python/Python.sublime_build",
-		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/User/WebSocketHandlerServer.py"
+		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/Python/Python.sublime_build"
 	],
 	"find":
 	{
@@ -585,6 +620,21 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"stop_client_but_server",
+			"server_init_error",
+			"is_server_alive",
+			"is_sb_event_active",
+			"socket",
+			"SOCKET",
+			"socket",
+			"print",
+			"disconnected from server",
+			"Disconnected from server",
+			"Disconnected",
+			"Disconected",
+			"Disc",
+			"status_thread_runner",
+			"show_status",
 			"remove_untoggled_packages",
 			"encode_and_send",
 			"send_message",
@@ -697,22 +747,7 @@
 			"loadingmodules",
 			"receive thread started",
 			"keep_alive_server_runner",
-			"print",
-			"init_config_file",
-			"refresh_packages",
-			"())\n",
-			"Refresh",
-			"LoadedModules",
-			"self.message",
-			"send_message",
-			"view",
-			"is_client_alive",
-			"self",
-			"package",
-			"folder_listing",
-			"command = \"C:\\Users\\Zoli\\AppData\\Roaming\\Sublime Text 3\\Packages\\Haskell Tool\\ht-daemon.exe\"\n",
-			"importlib",
-			"edit"
+			"print"
 		],
 		"highlight": true,
 		"in_selection": false,
@@ -720,18 +755,19 @@
 		"regex": false,
 		"replace_history":
 		[
+			"handle_status\n\nsent_package_paths",
 			"\n\nsent_package_paths"
 		],
 		"reverse": false,
 		"show_context": true,
 		"use_buffer2": true,
-		"whole_word": true,
+		"whole_word": false,
 		"wrap": true
 	},
 	"groups":
 	[
 		{
-			"selected": 0,
+			"selected": 2,
 			"sheets":
 			[
 				{
@@ -740,15 +776,15 @@
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 8944,
+						"buffer_size": 9971,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								3912,
-								3912
+								9971,
+								9971
 							]
 						],
 						"settings":
@@ -757,19 +793,19 @@
 							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
-						"translation.y": 2667.0,
+						"translation.y": 5757.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 0,
+					"stack_index": 1,
 					"type": "text"
 				},
 				{
 					"buffer": 1,
-					"file": "RenameCommand.py",
+					"file": "HaskellToolsPlugin.py",
 					"semi_transient": true,
 					"settings":
 					{
-						"buffer_size": 504,
+						"buffer_size": 2261,
 						"regions":
 						{
 						},
@@ -782,30 +818,32 @@
 						],
 						"settings":
 						{
-							"syntax": "Packages/Python/Python.sublime-syntax"
+							"syntax": "Packages/Python/Python.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
 						},
-						"translation.x": 0.0,
+						"translation.x": 235.0,
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 1,
+					"stack_index": 2,
 					"type": "text"
 				},
 				{
 					"buffer": 2,
-					"file": "ToggleCommand.py",
+					"file": "RenameCommand.py",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 449,
+						"buffer_size": 504,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								9,
-								9
+								255,
+								255
 							]
 						],
 						"settings":
@@ -816,7 +854,7 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 2,
+					"stack_index": 0,
 					"type": "text"
 				}
 			]
@@ -935,7 +973,7 @@
 	"show_open_files": true,
 	"show_tabs": true,
 	"side_bar_visible": true,
-	"side_bar_width": 324.0,
+	"side_bar_width": 291.0,
 	"status_bar_visible": true,
 	"template_settings":
 	{

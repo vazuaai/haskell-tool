@@ -13,45 +13,44 @@ class ClientManager:
 	_instance = None
 
 	def __init__(self):
+		# server
+		self.server_path = ""
+		self.is_server_alive = False
+		self.server_init_error = False
+		
+		# client
+		ClientManager._instance = self
+		self.host = "127.0.0.1"
+		self.port = 4123
 
-		if ClientManager._instance is None:
+		# lock
+		self.lock = Lock()
+		self.lock.acquire()
 
-			# server
-			self.server_path = ""
-			self.is_server_alive = False
-			self.server_init_error = False
-			
-			# client
-			ClientManager._instance = self
-			self.host = "127.0.0.1"
-			self.port = 4123
-			self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+		# packeges
+		self.sent_package_paths = ""
 
-			# lock
-			self.lock = Lock()
-			self.lock.acquire()
+		# selection
+		self.selection = ""
+		self.selection_file_name = ""
 
-			# packeges
-			self.sent_package_paths = ""
+		#config
+		self.config = {}
+		self.config_packages = []
+		self.config_file_path = os.path.dirname(__file__) + "\\config"
 
-			# selection
-			self.selection = ""
-			self.selection_file_name = ""
+		#status bar
+		self.sb_connection = "Connection: "
+		self.sb_info = "Info: "
+		self.sb_error = "Error message: "
+		self.sb_event_msg_type = ""
+		self.sb_event_msg = ""
+		self.is_sb_event_active = False;
+		sublime.active_window().active_view().set_status('serverStatus', ''.join([self.sb_connection,'disconnected from server']))
 
-			#config
-			self.config = {}
-			self.config_packages = []
-			self.config_file_path = os.path.dirname(__file__) + "\\config"
+		self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+		self.is_client_closable = False
 
-			#status bar
-			self.sb_connection = "Connection: "
-			self.sb_info = "Info: "
-			self.sb_error = "Error message: "
-			self.sb_event_msg_type = ""
-			self.sb_event_msg = ""
-			self.is_sb_event_active = False;
-			sublime.active_window().active_view().set_status('serverStatus', ''.join([self.sb_connection,'disconnected from server']))
-			
 	def startclient(self):
 		thread = Thread(target = self.connect, args=())
 		thread.start()
@@ -61,6 +60,7 @@ class ClientManager:
 	def connect(self):
 		isConnected = False
 		while True:
+			
 			try:
 				self.socket.connect((self.host, self.port))
 				self.lock.release()
@@ -68,16 +68,16 @@ class ClientManager:
 				break
 
 			except Exception as e:
-				if(isConnected):
-					time.sleep(0.1)
-					self.status_thread_runner(self.sb_error, "can't make a connection with server")
-					print("Receive threads exception: ",e)
-				
+				time.sleep(0.1)
+				self.status_thread_runner(self.sb_error, "can't make a connection with server")
+				print("Receive threads exception: ",e)
+				break
+			
+		self.is_server_alive = True	
 		thread = Thread(target = self.receive, args=())
 		thread.start()
 		print("INFO: Receive thread started.")
-
-		self.is_server_alive = True
+		
 		sublime.active_window().active_view().set_status('serverStatus', ''.join([self.sb_connection,'connected to server']))
 		sublime.active_window().run_command("toggle", {"paths": self.config_packages})
 					
@@ -88,7 +88,7 @@ class ClientManager:
 		while True:
 			try:
 				data = self.socket.recv(1024)
-				self.is_server_alive = True		
+				#self.is_server_alive = True		
 				del list_of_data[:]
 
 				if data == b'\n' or data == b'':
@@ -114,10 +114,11 @@ class ClientManager:
 						self.status_thread_runner(self.sb_info, "a message handled, for further info please read the log")
 						print("Handled message: ", message)
 
-			except ConnectionResetError:
+			except Exception:
 				self.is_server_alive = False
 				sublime.active_window().active_view().set_status('serverStatus', ''.join([self.sb_connection,'disconnected from server']))
 				self.status_thread_runner(self.sb_error, 'connection with server unexpectedly closed')
+				self.stop_client_but_server()
 				break
 
 
@@ -131,7 +132,7 @@ class ClientManager:
 		except ConnectionResetError:
 			self.is_server_alive = False
 			self.status_thread_runner(self.sb_error, 'connection with server unexpectedly closed')
-		
+			self.stop_client_but_server()			
 
 	def set_servers_path(self, path):
 		if(path != ""):
@@ -200,11 +201,9 @@ class ClientManager:
 			config_json = json.loads(config_str)
 			value = config_json.get("packages")
 			if( (value != None) and (len(value) != 0)):
-				print(len(value))
 				self.config_packages = value
 			else: 
 				self.status_thread_runner(self.sb_error, "there isn't any packages to initialize")
-
 		except ValueError:
 			self.status_thread_runner(self.sb_error, "there isn't any packages to initialize")
 		
@@ -307,32 +306,64 @@ class ClientManager:
 
 
 	def show_status(self, msg_type, msg):
+		self.set_status_bar()
+		time.sleep(5)
+		self.erase_status_bar()
+		
+	def set_status_bar(self):
+		sublime.active_window().active_view().set_status(self.sb_event_msg_type, self.sb_event_msg)
+		self.is_sb_event_active = True
 
+	def erase_status_bar(self):
+		sublime.active_window().active_view().erase_status(self.sb_event_msg_type)
+		self.is_sb_event_active = False
+
+	def status_thread_runner(self, msg_type, msg):
 		self.sb_event_msg_type = msg_type
 		self.sb_event_msg = ''.join([ msg_type, msg])
 
-		sublime.active_window().active_view().set_status(self.sb_event_msg_type, self.sb_event_msg)
-		self.is_sb_event_active = True
-					
-		time.sleep(5)
-
-		sublime.active_window().active_view().erase_status(self.sb_event_msg_type)
-		self.is_sb_event_active = False
-		
-
-	def status_thread_runner(self, msg_type, msg):
 		thread = Thread(target = self.show_status, args=(msg_type, msg))
 		thread.start()
 
-	def stop(self,edit):
+	def stop_client(self):
+		if(self.is_server_alive):	
+			data = {}
+			contents_array = []
+			data['tag'] = 'Stop'
+			data['contents'] = contents_array
+			self.encode_and_send(data)
+			self.close_socket()
+			self.kill_server()
+			self.erase_status_bar()
+			self.is_client_closable = True
+		else:
+			sublime.message_dialog("You need to start the tool before you want to stop!")
+
+	def stop_client_but_server(self):
 		data = {}
 		contents_array = []
 		data['tag'] = 'Stop'
 		data['contents'] = contents_array
 		self.encode_and_send(data)
+		self.close_socket()
+		self.erase_status_bar()
+		self.is_client_closable = True
 
+	def close_socket(self):
+		print("SOCKET BEFORE CLOSE: ",self.socket)
+		self.socket.close()
+		
+
+	def kill_server(self):
+		self.is_server_alive = False
+		kill_command = 'TASKKILL /F /IM ' + self.server_path
+		os.system(kill_command)
 
 def get_client_manager():
 	if ClientManager._instance is None:
 		ClientManager._instance = ClientManager()
+	return ClientManager._instance
+
+def get_a_new_client_manager():
+	ClientManager._instance = ClientManager()
 	return ClientManager._instance

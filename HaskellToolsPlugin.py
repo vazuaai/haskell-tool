@@ -23,22 +23,27 @@ class HaskellToolsPlugin(sublime_plugin.EventListener):
         print(view.file_name(), "modified")
 
     def on_activated(self, view):
-        print(view.file_name(), "is now the active view")
-        
-        if(get_client_manager().is_server_alive == True):
-            view.set_status('serverStatus', "Connected to server ")
-        else:
-            view.set_status('serverStatus', "Disconnected from server ")
 
-        if(get_client_manager().is_sb_event_active == True):
-            view.set_status(get_client_manager().sb_event_msg_type, get_client_manager().sb_event_msg)
+        if(view.file_name() is not None):
+            print(view.file_name(), "is now the active view")
+
+            print("server activation: ", get_client_manager().is_server_alive)
+            
+            if(get_client_manager().is_server_alive == True):
+                view.set_status('serverStatus', ''.join([get_client_manager().sb_connection,'connected to the server']))
+            elif(get_client_manager().is_server_alive == False):
+                print("In on_activated else" )
+                view.set_status('serverStatus', ''.join([get_client_manager().sb_connection,'disconnected from the server']))
+
+            if(get_client_manager().is_sb_event_active):
+                view.set_status(get_client_manager().sb_event_msg_type, get_client_manager().sb_event_msg)
+            else:
+                view.erase_status(get_client_manager().sb_event_msg_type)
         else:
-            view.erase_status(get_client_manager().sb_event_msg_type)
+            print("The view has no name")
 
     def on_close(self, view):
         print(view.file_name(), "is no more")
-        # if ClientManager._instance.connected is True:
-        #     ClientManager._instance.reload(view.file_name(), "removed")
 
     def on_clone(self, view):
         print(view.file_name(), "just got cloned")

@@ -25,5 +25,8 @@ class ServerManager:
 def get_server_manager():
 	if ServerManager._instance is None:
 		ServerManager._instance = ServerManager()
-		
+	return ServerManager._instance
+
+def get_a_new_server_manager():
+	ServerManager._instance = ServerManager()
 	return ServerManager._instance
