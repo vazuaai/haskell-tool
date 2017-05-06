@@ -22,6 +22,7 @@ class ClientManager:
 		ClientManager._instance = self
 		self.host = "127.0.0.1"
 		self.port = 4123
+		self.is_forced_stop = False
 
 		# lock
 		self.lock = Lock()
@@ -29,6 +30,7 @@ class ClientManager:
 
 		# packeges
 		self.sent_package_paths = ""
+		self.uploaded_modules = []
 
 		# selection
 		self.selection = ""
@@ -56,7 +58,6 @@ class ClientManager:
 		thread.start()
 		print("INFO: Connect thread started.")
 
-
 	def connect(self):
 		isConnected = False
 		while True:
@@ -66,7 +67,6 @@ class ClientManager:
 				self.lock.release()
 				isConnected = True
 				break
-
 			except Exception as e:
 				time.sleep(0.1)
 				self.status_thread_runner(self.sb_error, "can't make a connection with server")
@@ -87,8 +87,7 @@ class ClientManager:
 
 		while True:
 			try:
-				data = self.socket.recv(1024)
-				#self.is_server_alive = True		
+				data = self.socket.recv(1024)		
 				del list_of_data[:]
 
 				if data == b'\n' or data == b'':
@@ -117,8 +116,11 @@ class ClientManager:
 			except Exception:
 				self.is_server_alive = False
 				sublime.active_window().active_view().set_status('serverStatus', ''.join([self.sb_connection,'disconnected from server']))
-				self.status_thread_runner(self.sb_error, 'connection with server unexpectedly closed')
 				self.stop_client_but_server()
+				if(self.is_forced_stop):
+					self.status_thread_runner(self.sb_error, 'connection with server closed')
+				else:
+					self.status_thread_runner(self.sb_error, 'connection with server unexpectedly closed')
 				break
 
 
@@ -153,6 +155,7 @@ class ClientManager:
 
 
 	def remove_untoggled_packages(self, package):
+		print("BEFORE REMOVE: ", self.config_packages)
 		is_sendable = True
 		for item in package:
 			try:
@@ -164,6 +167,7 @@ class ClientManager:
 		if(is_sendable):
 			self.config['packages'] = self.config_packages
 			self.set_config_file()
+		print("AFTER REMOVE: ", self.config_packages)
 
 
 	def set_config_file(self):
@@ -260,30 +264,43 @@ class ClientManager:
 		self.selection = str(row_begin) + ":" + str(col_begin) + "-" + str(row_end) + ":" + str(col_end)
 		self.selection_file_name = view.file_name()
 
+	def get_uploaded_modules(self):
+		print(self.selection_file_name)
+		for package in self.config_packages:
+			for file in os.listdir(package):
+				self.uploaded_modules.append(os.path.join(package, file))
+
+		#self.uploaded_modules = [f for f in os.listdir(self.config_packages) if os.path.isfile(os.path.join(self.config_packages, f))]
+		print(self.uploaded_modules)
 
 	def perform_refactoring(self, edit, refactoring_type, details):
 
 		if(self.is_server_alive):
 			
 			self.get_selection()
-			path = str(self.selection_file_name)
-			details_array = []
+			self.get_uploaded_modules()
 
-			if details != None:
-				details_array.append(details)
-
-			data = {}
-			data['tag'] = 'PerformRefactoring'
-			data['refactoring'] = refactoring_type
-			data['modulePath'] = path
-
-			if(refactoring_type == "OrganizeImports" or refactoring_type == "GenerateExports"):
-				data['editorSelection'] = ""
+			if(self.selection_file_name not in self.uploaded_modules or len(self.config_packages) == 0):
+				sublime.message_dialog("You need to toggle module first!")
 			else:
-				data['editorSelection'] = self.selection
-				
-			data['details'] = details_array
-			self.encode_and_send(data)
+				path = str(self.selection_file_name)
+				details_array = []
+
+				if details != None:
+					details_array.append(details)
+
+				data = {}
+				data['tag'] = 'PerformRefactoring'
+				data['refactoring'] = refactoring_type
+				data['modulePath'] = path
+
+				if(refactoring_type == "OrganizeImports" or refactoring_type == "GenerateExports"):
+					data['editorSelection'] = ""
+				else:
+					data['editorSelection'] = self.selection
+					
+				data['details'] = details_array
+				self.encode_and_send(data)
 
 		else:
 			sublime.message_dialog("You need to start haskell tool first!")
@@ -327,6 +344,7 @@ class ClientManager:
 
 	def stop_client(self):
 		if(self.is_server_alive):	
+			self.is_forced_stop = True
 			data = {}
 			contents_array = []
 			data['tag'] = 'Stop'
