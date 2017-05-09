@@ -11,7 +11,7 @@ class ServerManager:
 	def run(self):	
 		thread = Thread(target = self.startserver, args=())
 		thread.start()
-		print("INFO: Server thread started.")
+		print("INFO: SERVER THREAD STARTED.")
 
 	def startserver(self):
 		try:

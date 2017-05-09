@@ -1,4 +1,3 @@
-#!/usr/bin/python35
 import sublime_plugin
 
 from .client.ClientManager import ClientManager
