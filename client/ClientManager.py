@@ -48,15 +48,15 @@ class ClientManager:
 		self.sb_event_msg_type = ""
 		self.sb_event_msg = ""
 		self.is_sb_event_active = False;
-		sublime.active_window().active_view().set_status('serverStatus', ''.join([self.sb_connection,'disconnected from server']))
 
+		sublime.active_window().active_view().set_status('serverStatus', ''.join([self.sb_connection,'disconnected from server']))
 		self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 		self.is_client_closable = False
 
 	def startclient(self):
 		thread = Thread(target = self.connect, args=())
 		thread.start()
-		print("INFO: Connect thread started.")
+		print("INFO: CONNECT THREAD STARTED")
 
 	def connect(self):
 		isConnected = False
@@ -70,13 +70,13 @@ class ClientManager:
 			except Exception as e:
 				time.sleep(0.1)
 				self.status_thread_runner(self.sb_error, "can't make a connection with server")
-				print("Receive threads exception: ",e)
+				print("RECEIVE THREADS EXCEPTION: ",e)
 				break
 			
 		self.is_server_alive = True	
 		thread = Thread(target = self.receive, args=())
 		thread.start()
-		print("INFO: Receive thread started.")
+		print("INFO: RECEIVE THREAD STARTED")
 		
 		sublime.active_window().active_view().set_status('serverStatus', ''.join([self.sb_connection,'connected to server']))
 		sublime.active_window().run_command("toggle", {"paths": self.config_packages})
@@ -111,7 +111,7 @@ class ClientManager:
 
 					else :
 						self.status_thread_runner(self.sb_info, "a message handled, for further info please read the log")
-						print("Handled message: ", message)
+						print("HANDLED MESSAGE ", message)
 
 			except Exception:
 				self.is_server_alive = False
@@ -155,7 +155,6 @@ class ClientManager:
 
 
 	def remove_untoggled_packages(self, package):
-		print("BEFORE REMOVE: ", self.config_packages)
 		is_sendable = True
 		for item in package:
 			try:
@@ -167,7 +166,6 @@ class ClientManager:
 		if(is_sendable):
 			self.config['packages'] = self.config_packages
 			self.set_config_file()
-		print("AFTER REMOVE: ", self.config_packages)
 
 
 	def set_config_file(self):
@@ -220,7 +218,7 @@ class ClientManager:
 			self.init_packages_from_config_file()
 		except Exception as exc:
 			self.status_thread_runner(self.sb_error, "unexpected error while config file initialization")
-			print("Exception thrown at config file initialization: ", exc)
+			print("EXCEPTION THROWN AT CONFIG FILE INITIALIZATION: ", exc)
 
 
 	def encode_and_send(self, data):
@@ -265,13 +263,9 @@ class ClientManager:
 		self.selection_file_name = view.file_name()
 
 	def get_uploaded_modules(self):
-		print(self.selection_file_name)
 		for package in self.config_packages:
 			for file in os.listdir(package):
 				self.uploaded_modules.append(os.path.join(package, file))
-
-		#self.uploaded_modules = [f for f in os.listdir(self.config_packages) if os.path.isfile(os.path.join(self.config_packages, f))]
-		print(self.uploaded_modules)
 
 	def perform_refactoring(self, edit, refactoring_type, details):
 
@@ -368,7 +362,6 @@ class ClientManager:
 		self.is_client_closable = True
 
 	def close_socket(self):
-		print("SOCKET BEFORE CLOSE: ",self.socket)
 		self.socket.close()
 		
 

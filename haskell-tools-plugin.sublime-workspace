@@ -328,19 +328,10 @@
 	"buffers":
 	[
 		{
-			"file": "/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-test/Rename.hs",
+			"file": "/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-test/FloatOut.hs",
 			"settings":
 			{
-				"buffer_size": 210,
-				"encoding": "UTF-8",
-				"line_ending": "Windows"
-			}
-		},
-		{
-			"file": "client/ClientManager.py",
-			"settings":
-			{
-				"buffer_size": 10692,
+				"buffer_size": 184,
 				"encoding": "UTF-8",
 				"line_ending": "Windows"
 			}
@@ -350,6 +341,14 @@
 			"settings":
 			{
 				"buffer_size": 198,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-test/Rename.hs",
+			"settings":
+			{
+				"buffer_size": 218,
 				"line_ending": "Windows"
 			}
 		}
@@ -410,7 +409,7 @@
 	},
 	"console":
 	{
-		"height": 163.0,
+		"height": 119.0,
 		"history":
 		[
 			"print(sys.version)",
@@ -473,36 +472,35 @@
 		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages",
 		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-test",
 		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool",
-		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/client",
-		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/server"
+		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/client"
 	],
 	"file_history":
 	[
-		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/client/ClientManager.py",
-		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/client/config",
-		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-test/ExtractBinding.hs",
-		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-test/Rename.hs",
+		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/FloatOutCommand.py",
+		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/GenerateExportsCommand.py",
+		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/GenerateTypeSignatureCommand.py",
+		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/InlineBindingCommand.py",
+		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/OrganizeImportsCommand.py",
 		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/ServerControllerCommand.py",
+		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/client/ClientManager.py",
+		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/StopClientCommand.py",
+		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-test/Rename.hs",
+		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/client/config",
 		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/server/ServerManager.py",
 		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/RenameCommand.py",
 		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/Main.sublime-menu",
+		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/ExtractBindingCommand.py",
+		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-test/ExtractBinding.hs",
 		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/HaskellToolsPlugin.py",
 		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/SetServerPathCommand.py",
 		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-test/OrganizeImports.hs",
-		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/FloatOutCommand.py",
-		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/StopClientCommand.py",
 		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-test/GenerateTypeSignature.hs",
 		"/C/Users/Zoli/Desktop/MENT.py",
 		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-test/InlineBinding.hs",
 		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/ToggleCommand.py",
 		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/Side Bar.sublime-menu",
-		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/ExtractBindingCommand.py",
 		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/haskell-tools-plugin.sublime-project",
 		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/UntoggleCommand.py",
-		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/OrganizeImportsCommand.py",
-		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/InlineBindingCommand.py",
-		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/GenerateTypeSignatureCommand.py",
-		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/GenerateExportsCommand.py",
 		"/E/Szakdolgozat/clientmanager_methods.py",
 		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-tool/GenerateExportsCommands.py",
 		"/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-test/GenerateExports.hs",
@@ -777,19 +775,19 @@
 			[
 				{
 					"buffer": 0,
-					"file": "/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-test/Rename.hs",
+					"file": "/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-test/FloatOut.hs",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 210,
+						"buffer_size": 184,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								210,
-								210
+								184,
+								184
 							]
 						],
 						"settings":
@@ -805,35 +803,6 @@
 				},
 				{
 					"buffer": 1,
-					"file": "client/ClientManager.py",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 10692,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								9650,
-								9650
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Python/Python.sublime-syntax",
-							"translate_tabs_to_spaces": false
-						},
-						"translation.x": 0.0,
-						"translation.y": 6313.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 0,
-					"type": "text"
-				},
-				{
-					"buffer": 2,
 					"file": "client/config",
 					"semi_transient": false,
 					"settings":
@@ -846,12 +815,40 @@
 						[
 							[
 								0,
-								198
+								0
 							]
 						],
 						"settings":
 						{
 							"syntax": "Packages/Text/Plain text.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": "/C/Users/Zoli/AppData/Roaming/Sublime Text 3/Packages/haskell-test/Rename.hs",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 218,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								218,
+								218
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Haskell/Haskell.sublime-syntax"
 						},
 						"translation.x": 0.0,
 						"translation.y": 0.0,

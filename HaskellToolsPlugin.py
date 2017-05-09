@@ -26,8 +26,6 @@ class HaskellToolsPlugin(sublime_plugin.EventListener):
 
         if(view.file_name() is not None):
             print(view.file_name(), "is now the active view")
-
-            print("server activation: ", get_client_manager().is_server_alive)
             
             if(get_client_manager().is_server_alive == True):
                 view.set_status('serverStatus', ''.join([get_client_manager().sb_connection,'connected to the server']))
@@ -55,6 +53,9 @@ class HaskellToolsPlugin(sublime_plugin.EventListener):
         print(command_name, "window_command")       
         
         if command_name == "remove_folder":
+            ClientManager._instance.refresh_packages(args, command_name)
+
+        if command_name == "new_file_at":
             ClientManager._instance.refresh_packages(args, command_name)
 
     def on_view_command(self, view, command_name, args):

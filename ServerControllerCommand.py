@@ -14,15 +14,13 @@ class ServerControllerCommand(sublime_plugin.TextCommand):
 		self.client = get_client_manager()
 
 	def run(self, edit):
-		print("In server controller run")
+		
 		if(self.client.is_client_closable):
-			print("Client is closable!")
 			del self.server
 			del self.client
 			self.server = get_a_new_server_manager()
 			self.client = get_a_new_client_manager()
-		print("S: ", self.server)
-		print("C: ", self.client)
+
 		self.client.init_config_file()
 		self.client.startclient()
 		self.server.run()

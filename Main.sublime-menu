@@ -11,7 +11,7 @@
                 [
                     { "caption": "-", "id": "end"},
                     { "caption": "Start Haskell Tool", "command": "server_controller", "id": "end", "checkbox": "False"}, 
-                    { "caption": "Stop Client", "command": "stop_client", "id": "end"},
+                    { "caption": "Close Connection", "command": "stop_client", "id": "end"},
                     { 
                     "caption": "Refactoring", 
                     "command": "refactoring", 

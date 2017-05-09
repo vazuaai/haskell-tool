@@ -7,7 +7,7 @@ class ExtractBindingCommand(sublime_plugin.TextCommand):
 	def run(self,edit):
 		self.edit = edit
 		if(get_client_manager().is_server_alive == True):
-			sublime.active_window().show_input_panel("Type here: ", "", self.on_done, None, None)
+			sublime.active_window().show_input_panel("New name: ", "", self.on_done, None, None)
 		else: 
 			sublime.message_dialog("You need to start haskell tool first!")
 		
